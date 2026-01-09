@@ -1,0 +1,179 @@
+<!-- dashboard.html -->
+<div class="min-h-screen flex" [class]="bgClass">
+  
+  <!-- Sidebar -->
+  <div *ngIf="sidebarOpen" class="w-64 border-r" [class]="borderColor + ' ' + cardBg">
+    <div class="p-4">
+      <h2 class="text-xl font-bold mb-6" [class]="textPrimary">
+        <span class="mr-2">📊</span> InventoryPro
+      </h2>
+      <nav>
+        <ul class="space-y-2">
+          <li *ngFor="let item of menuItems">
+            <button
+              (click)="setCurrentView(item.id)"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === item.id && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === item.id && darkMode"
+              [class]="currentView !== item.id ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== item.id && darkMode"
+            >
+              <span class="mr-3">{{ getIcon(item.icon) }}</span>
+              {{ item.label }}
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto">
+    <!-- Header -->
+    <header class="sticky top-0 z-10 border-b" [class]="borderColor + ' ' + cardBg">
+      <div class="px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+          <button 
+            (click)="toggleSidebar()" 
+            class="mr-4 p-2 rounded-lg hover:bg-gray-100"
+            [class.hover:bg-gray-700]="darkMode"
+          >
+            {{ getIcon(sidebarOpen ? 'close' : 'menu') }}
+          </button>
+          <h1 class="text-2xl font-bold" [class]="textPrimary">
+            {{ getCurrentViewLabel() }}
+          </h1>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Barre de recherche (seulement sur la vue produits) -->
+          <div *ngIf="currentView === 'products'" class="relative">
+            <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
+              {{ getIcon('search') }}
+            </span>
+            <input
+              type="text"
+              [value]="searchQuery"
+              (input)="onSearchChange($event.target.value)"
+              placeholder="Rechercher..."
+              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              [class.bg-gray-800]="darkMode"
+              [class.border-gray-700]="darkMode"
+              [class.text-white]="darkMode"
+            />
+          </div>
+          
+          <!-- Bouton mode sombre -->
+          <button 
+            (click)="toggleDarkMode()" 
+            class="p-2 rounded-lg hover:bg-gray-100"
+            [class.hover:bg-gray-700]="darkMode"
+            [class]="textSecondary"
+          >
+            {{ getIcon(darkMode ? 'sun' : 'moon') }}
+          </button>
+          
+          <!-- Notification -->
+          <button class="p-2 rounded-lg hover:bg-gray-100" 
+                  [class.hover:bg-gray-700]="darkMode"
+                  [class]="textSecondary">
+            {{ getIcon('bell') }}
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="p-6">
+      
+      <!-- Vue Dashboard -->
+      <div *ngIf="currentView === 'dashboard'">
+        <!-- Statistiques -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div *ngFor="let stat of getStats()" 
+               class="rounded-xl border p-6" 
+               [class]="cardBg + ' ' + borderColor">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-sm" [class]="textSecondary">{{ stat.title }}</p>
+                <p class="text-2xl font-bold mt-2" [class]="textPrimary">
+                  {{ formatNumber(stat.value) }} €
+                </p>
+              </div>
+              <div class="p-3 rounded-lg" [class]="getTrendColorClass(stat.trend)">
+                <span [class]="getTrendIconColorClass(stat.trend)">
+                  {{ getIcon(stat.icon) }}
+                </span>
+              </div>
+            </div>
+            <div *ngIf="stat.change !== undefined" class="flex items-center text-sm">
+              <span [class]="getChangeClass(stat.change)">
+                {{ getChangeIcon(stat.change) }} {{ Math.abs(stat.change) }}%
+              </span>
+              <span class="ml-2" [class]="textSecondary">vs last month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Graphiques et produits -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Graphique des catégories -->
+          <div class="lg:col-span-2 rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+            <h3 class="text-lg font-semibold mb-6" [class]="textPrimary">Stock by Category</h3>
+            <div class="space-y-4">
+              <div *ngFor="let category of categoryData" class="flex items-center">
+                <div class="w-24" [class]="textSecondary">{{ category.name }}</div>
+                <div class="flex-1 h-4 rounded-full bg-gray-200 overflow-hidden">
+                  <div [style.width.%]="category.value" 
+                       [style.background-color]="category.color"
+                       class="h-full"></div>
+                </div>
+                <div class="w-12 text-right" [class]="textPrimary">{{ category.value }}%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liste des produits récents -->
+          <div class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+            <h3 class="text-lg font-semibold mb-6" [class]="textPrimary">Recent Products</h3>
+            <div class="space-y-4">
+              <div *ngFor="let product of products.slice(0, 5)" 
+                   class="flex items-center justify-between p-3 rounded-lg border"
+                   [class]="borderColor">
+                <div>
+                  <p class="font-medium" [class]="textPrimary">{{ product.name }}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm"
+                      [class]="getStatusClass(product.status)">
+                  {{ product.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vue Products -->
+      <div *ngIf="currentView === 'products'">
+        <!-- On passe les données au composant ProductComponent -->
+        <app-product
+          [products]="products"
+        ></app-product>
+      </div>
+
+      <!-- Vue Suppliers -->
+      <div *ngIf="currentView === 'suppliers'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+        <h3 class="text-xl font-bold mb-4" [class]="textPrimary">Suppliers</h3>
+        <p [class]="textSecondary">Suppliers management coming soon...</p>
+      </div>
+
+      <!-- Autres vues -->
+      <div *ngIf="['customers', 'transactions', 'reports', 'settings'].includes(currentView)" 
+           class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+        <h3 class="text-xl font-bold mb-4" [class]="textPrimary">{{ getCurrentViewLabel() }}</h3>
+        <p [class]="textSecondary">{{ getCurrentViewLabel() }} management coming soon...</p>
+      </div>
+
+    </main>
+  </div>
+</div>
