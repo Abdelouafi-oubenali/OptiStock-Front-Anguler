@@ -14,8 +14,6 @@ export class ProductService {
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || '';
-    console.log('Using token:', token);
-
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -27,9 +25,17 @@ export class ProductService {
   }
 
   createProduct(product: Product): Observable<Product> {
-    console.log('Creating product:', product);
     const headers = this.getAuthHeaders();
     return this.http.post<Product>(this.apiUrl, product, { headers });
+  }
+  updateProduct(product: Product): Observable<Product> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<Product>(`${this.apiUrl}/${product.id}`, product, { headers });
+  }
+
+  deleteProduct(productId: string): Observable<void> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/${productId}`, { headers });
   }
 
 }

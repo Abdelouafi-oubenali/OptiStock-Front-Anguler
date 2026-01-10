@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../services/product-service';
 
 export interface Product {
+  id?: string;
   name: string;
   description: string;
   sku: string;
   price: number;
-  status?: string; // Optionnel pour le formulaire
+  status?: string;
 }
 
 @Component({
@@ -31,22 +32,49 @@ export class ProductComponent {
   @Output() productDeleted = new EventEmitter<Product>();
   @Output() productAdded = new EventEmitter<void>();
 
-  // form afficher 
+  // Gestion du formulaire
   showCreateForm = false;
+  isEditMode = false;
+  productToEdit: Product | null = null;
 
-  // create product 
-  newProduct: Product = {
-    name: '',
-    description: '',
-    sku: '',
-    price: 0,
-    status: 'In Stock' // Valeur par défaut
-  };
+  newProduct: Product = this.getEmptyProduct();
 
+  openCreateForm(): void {
+    this.isEditMode = false;
+    this.productToEdit = null;
+    this.newProduct = this.getEmptyProduct();
+    this.showCreateForm = true;
+  }
+
+  openEditForm(product: Product): void {
+    this.isEditMode = true;
+    this.productToEdit = product;
+    this.newProduct = { ...product };
+    this.showCreateForm = true;
+  }
+
+  closeForm(): void {
+    this.showCreateForm = false;
+    this.isEditMode = false;
+    this.productToEdit = null;
+    this.newProduct = this.getEmptyProduct();
+  }
+
+  // Créer un produit vide
+  private getEmptyProduct(): Product {
+    return {
+      name: '',
+      description: '',
+      sku: '',
+      price: 0,
+      status: 'In Stock'
+    };
+  }
+
+  // Créer un nouveau produit
   createProduct(): void {
     this.productService.createProduct(this.newProduct).subscribe({
       next: (createdProduct) => {
-        // Ajoute le status par défaut si non défini
         const productWithStatus = {
           ...createdProduct,
           status: createdProduct.status || 'In Stock'
@@ -54,27 +82,61 @@ export class ProductComponent {
         
         this.products.push(productWithStatus);
         console.log('Product created successfully:', productWithStatus);
-
-        // Réinitialiser le formulaire
-        this.newProduct = {
-          name: '',
-          description: '',
-          sku: '',
-          price: 0,
-          status: 'In Stock'
-        };
-
-        this.showCreateForm = false; 
         
-        // Émettre l'événement
+        this.closeForm();
         this.productAdded.emit();
       },
       error: (error) => {
         console.error('Error creating product:', error);
-        // Gérer l'erreur ici (afficher un message à l'utilisateur)
+        // Gérer l'erreur ici
       }
     });
   }
+
+
+updateProduct(): void {
+  if (!this.productToEdit) return;
+
+  this.productService.updateProduct(this.newProduct).subscribe({
+    next: (updatedProduct) => {
+      const index = this.products.findIndex(p => p.id === this.productToEdit?.id);
+      console.log('Updating product at index:', index);
+      if (index !== -1) {
+        this.products[index] = {
+          ...updatedProduct,
+          status: updatedProduct.status || 'In Stock'
+        };
+        
+        console.log('Product updated successfully:', updatedProduct);
+        this.productEdited.emit(updatedProduct);
+      }
+      this.closeForm();
+    },
+    error: (error) => {
+      console.error('Error updating product:', error);
+      // Gérer l'erreur ici
+    }
+  });
+}
+
+//deleteProduct(productId: number): void {
+
+deleteProduct(product: Product): void {
+  if(!product.id) return;
+  
+  this.productService.deleteProduct(product.id).subscribe({
+    next: () => {
+      this.products = this.products.filter(p => p.id !== product.id);
+      console.log('Product deleted successfully:', product.id);
+      this.productDeleted.emit(product);
+    },
+    error: (error) => {
+      console.error('Error deleting product:', error);
+      // Gérer l'erreur ici
+    }
+  });
+}
+
 
   get filteredProducts(): Product[] {
     if (!this.searchQuery?.trim()) {
@@ -155,17 +217,8 @@ export class ProductComponent {
   }
 
   // Méthodes d'actions qui émettent des événements
-  viewProduct(product: Product): void {
-    this.productViewed.emit(product);
-  }
 
-  editProduct(product: Product): void {
-    this.productEdited.emit(product);
-  }
 
-  deleteProduct(product: Product): void {
-    this.productDeleted.emit(product);
-  }
 
   onSearchChange(event: any): void {
     this.searchChange.emit(event.target.value);
