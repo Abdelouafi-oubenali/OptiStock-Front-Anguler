@@ -136,13 +136,13 @@ constructor(private productService: ProductService) {}
     console.log('Product edited:', product);
   }
 
-  onProductDeleted(product: Product): void {
-    console.log('Product deleted:', product);
-    const index = this.products.findIndex(p => p.id === product.id);
-    if (index > -1) {
-      this.products.splice(index, 1);
-    }
-  }
+  // onProductDeleted(product: Product): void {
+  //   console.log('Product deleted:', product);
+  //   const index = this.products.findIndex(p => p.id === product.id);
+  //   if (index > -1) {
+  //     this.products.splice(index, 1);
+  //   }
+  // }
 
   onProductAdded(): void {
     console.log('Add new product clicked');

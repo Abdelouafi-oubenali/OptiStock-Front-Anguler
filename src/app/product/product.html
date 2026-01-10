@@ -25,7 +25,7 @@
       
       <!-- Bouton Ajouter -->
       <button
-        (click)="addProduct()"
+        (click)="showCreateForm = true"
         class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         <span class="mr-2">{{ getIcon('plus') }}</span>
@@ -45,7 +45,7 @@
           <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
             SKU
           </th>
-          <th class="px-6 py-3 text-left text-xs font-médium uppercase tracking-wider" [class]="textPrimary">
+          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
             Prix
           </th>
           <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
@@ -67,16 +67,15 @@
           <td class="px-6 py-4 whitespace-nowrap" [class]="textSecondary">
             {{ product.sku }}
           </td>
-    
           <td class="px-6 py-4 whitespace-nowrap" [class]="textSecondary">
             {{ formatNumber(product.price) }} €
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
             <span 
               class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-              [class]="getStatusClass(product.status)"
+              [class]="getStatusClass(product.status || 'In Stock')"
             >
-              {{ product.status }}
+              {{ product.status || 'In Stock' }}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -111,7 +110,7 @@
         
         <!-- Message si aucun produit -->
         <tr *ngIf="filteredProducts.length === 0">
-          <td colspan="7" class="px-6 py-8 text-center" [class]="textSecondary">
+          <td colspan="5" class="px-6 py-8 text-center" [class]="textSecondary">
             <div class="flex flex-col items-center">
               <span class="text-4xl mb-4">📦</span>
               <p class="text-lg">Aucun produit trouvé</p>
@@ -131,5 +130,140 @@
     <span *ngIf="searchQuery && filteredProducts.length !== products.length">
       (sur {{ products.length }} au total)
     </span>
+  </div>
+</div>
+
+<!-- Formulaire de création de produit -->
+<div *ngIf="showCreateForm" class="fixed inset-0 bg-gray-900/30 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+  <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl" (click)="$event.stopPropagation()">
+    
+    <!-- En-tête du formulaire -->
+    <div class="p-8 border-b border-gray-100">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-800">
+            Nouveau Produit
+          </h3>
+          <p class="mt-2 text-gray-600">
+            Remplissez les informations pour ajouter un nouveau produit à votre catalogue
+          </p>
+        </div>
+        <button
+          (click)="showCreateForm = false"
+          class="p-3 rounded-full hover:bg-gray-100 transition-all duration-200"
+          aria-label="Fermer"
+        >
+          <span class="text-gray-500 text-xl hover:text-gray-700">✕</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <form (ngSubmit)="createProduct()" class="p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Nom du produit -->
+        <div class="md:col-span-2">
+          <label for="name" class="block text-sm font-semibold text-gray-700 mb-3">
+            Nom du produit *
+          </label>
+          <input
+            type="text"
+            id="name"
+            [(ngModel)]="newProduct.name"
+            name="name"
+            placeholder="Ex: Laptop Dell XPS 13"
+            required
+            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="md:col-span-2">
+          <label for="description" class="block text-sm font-semibold text-gray-700 mb-3">
+            Description *
+          </label>
+          <textarea
+            id="description"
+            [(ngModel)]="newProduct.description"
+            name="description"
+            rows="4"
+            placeholder="Ordinateur portable haut de gamme"
+            required
+            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+          ></textarea>
+        </div>
+
+        <!-- SKU -->
+        <div>
+          <label for="sku" class="block text-sm font-semibold text-gray-700 mb-3">
+            SKU *
+          </label>
+          <input
+            type="text"
+            id="sku"
+            [(ngModel)]="newProduct.sku"
+            name="sku"
+            placeholder="DLXPS13-2023"
+            required
+            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+          />
+        </div>
+
+        <!-- Prix -->
+        <div>
+          <label for="price" class="block text-sm font-semibold text-gray-700 mb-3">
+            Prix (€) *
+          </label>
+          <input
+            type="number"
+            id="price"
+            [(ngModel)]="newProduct.price"
+            name="price"
+            placeholder="1299.99"
+            min="1"
+            step="0.01"
+            required
+            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+          />
+        </div>
+
+        <!-- Statut (optionnel, à ajouter si besoin) -->
+        <div class="md:col-span-2 hidden">
+          <label for="status" class="block text-sm font-semibold text-gray-700 mb-3">
+            Statut *
+          </label>
+          <select
+            id="status"
+            [(ngModel)]="newProduct.status"
+            name="status"
+            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+          >
+            <option value="In Stock">En stock</option>
+            <option value="Low Stock">Stock faible</option>
+            <option value="Out of Stock">Rupture de stock</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex justify-end space-x-4 pt-8 border-t border-gray-100">
+        <button
+          type="button"
+          (click)="showCreateForm = false"
+          class="px-8 py-3 border-2 border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+        >
+          + Ajouter le produit
+        </button>
+      </div>
+    </form>
   </div>
 </div>

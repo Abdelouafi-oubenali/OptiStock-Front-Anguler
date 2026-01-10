@@ -2,14 +2,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../services/product-service';
-import { Router } from '@angular/router';
 
 export interface Product {
-  id: number;
   name: string;
+  description: string;
   sku: string;
   price: number;
-  status: string;
+  status?: string; // Optionnel pour le formulaire
 }
 
 @Component({
@@ -19,6 +18,9 @@ export interface Product {
   templateUrl: './product.html'
 })
 export class ProductComponent {
+
+  constructor(private productService: ProductService) {}
+
   @Input() products: Product[] = [];
   @Input() searchQuery = '';
   @Input() darkMode = false;
@@ -29,18 +31,63 @@ export class ProductComponent {
   @Output() productDeleted = new EventEmitter<Product>();
   @Output() productAdded = new EventEmitter<void>();
 
+  // form afficher 
+  showCreateForm = false;
+
+  // create product 
+  newProduct: Product = {
+    name: '',
+    description: '',
+    sku: '',
+    price: 0,
+    status: 'In Stock' // Valeur par défaut
+  };
+
+  createProduct(): void {
+    this.productService.createProduct(this.newProduct).subscribe({
+      next: (createdProduct) => {
+        // Ajoute le status par défaut si non défini
+        const productWithStatus = {
+          ...createdProduct,
+          status: createdProduct.status || 'In Stock'
+        };
+        
+        this.products.push(productWithStatus);
+        console.log('Product created successfully:', productWithStatus);
+
+        // Réinitialiser le formulaire
+        this.newProduct = {
+          name: '',
+          description: '',
+          sku: '',
+          price: 0,
+          status: 'In Stock'
+        };
+
+        this.showCreateForm = false; 
+        
+        // Émettre l'événement
+        this.productAdded.emit();
+      },
+      error: (error) => {
+        console.error('Error creating product:', error);
+        // Gérer l'erreur ici (afficher un message à l'utilisateur)
+      }
+    });
+  }
 
   get filteredProducts(): Product[] {
-    if (!this.searchQuery.trim()) {
+    if (!this.searchQuery?.trim()) {
       return this.products;
     }
-    
+
     const query = this.searchQuery.toLowerCase();
     return this.products.filter(product =>
       product.name.toLowerCase().includes(query) ||
+      product.description?.toLowerCase().includes(query) ||
       product.sku.toLowerCase().includes(query) ||
-      product.price.toString ||
-      product.status.toLowerCase().includes(query)
+      product.price.toString().includes(query) ||
+      product.status?.toLowerCase().includes(query)
     );
   }
 
@@ -89,7 +136,10 @@ export class ProductComponent {
 
   // Méthode pour formater les nombres
   formatNumber(value: number): string {
-    return value.toLocaleString();
+    return value.toLocaleString('fr-FR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
 
   // Méthode pour obtenir les icônes
@@ -115,10 +165,6 @@ export class ProductComponent {
 
   deleteProduct(product: Product): void {
     this.productDeleted.emit(product);
-  }
-
-  addProduct(): void {
-    this.productAdded.emit();
   }
 
   onSearchChange(event: any): void {
