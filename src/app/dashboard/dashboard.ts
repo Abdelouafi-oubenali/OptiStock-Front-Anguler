@@ -6,6 +6,9 @@ import { ProductService } from '../services/product-service';
 import { UserService } from '../services/user-service';
 import { UserComponent } from '../users/UsersComponent';
 import { User } from '../users/user.model';
+import { warehouses } from '../warehouses/warehouses.model';
+import { WarehousesComponent } from '../warehouses/warehousesComponent';
+import { WarehousesService } from '../services/warehoses-serviece';
 
 interface MenuItem {
   id: string;
@@ -24,7 +27,7 @@ interface StatCard {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductComponent , UserComponent],
+  imports: [CommonModule, FormsModule, ProductComponent, UserComponent, WarehousesComponent],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
@@ -39,7 +42,9 @@ export class DashboardComponent implements OnInit {
   // Données mockées
   menuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'grid' },
+    { id: 'users', label: 'Users', icon: 'users' },
     { id: 'products', label: 'Products', icon: 'package' },
+    { id: 'warehouses', label: 'Warehouses', icon: 'warehouse' },
     { id: 'suppliers', label: 'Suppliers', icon: 'truck' },
     { id: 'customers', label: 'Customers', icon: 'users' },
     { id: 'transactions', label: 'Transactions', icon: 'credit-card' },
@@ -60,11 +65,21 @@ export class DashboardComponent implements OnInit {
   // Données des produits
   products: Product[] = [];
   users: User[] = [];
+  warehouses: warehouses[] = [];
+
+  constructor(
+    private productService: ProductService,
+    private userService: UserService,
+    private warehousesService: WarehousesService
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts();
-    this.loadUsers(); 
+    this.loadUsers();
+    console.log("test warehouses loaded");
+    this.loadWarehouses();
   }
+
   loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (data) => {
@@ -77,9 +92,8 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // Données de users 
-
-     loadUsers(): void {
+  // Données de users
+  loadUsers(): void {
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
@@ -91,14 +105,29 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-   onUsersChanged(updatedUsers: User[]): void {
+  onUsersChanged(updatedUsers: User[]): void {
     this.users = updatedUsers;
     console.log('Users updated:', updatedUsers);
   }
 
+  // Données de warehouses - Fixed method name and error handling
+  loadWarehouses(): void {
+    this.warehousesService.getWarehouses().subscribe({
+      next: (data) => {
+        this.warehouses = data;
+        console.log('Warehouses loaded in dashboard:', data);
+      },
+      error: (err) => {
+        console.error('Error loading warehouses:', err);
+      }
+    });
+  }
 
 
-
+  onWarehousesChanged(updatedWarehouses: warehouses[]): void {
+    this.warehouses = updatedWarehouses;
+    console.log('Warehouses updated in dashboard:', updatedWarehouses);
+  }
 
   categoryData = [
     { name: 'Electronics', value: 35, color: '#3b82f6' },
@@ -107,8 +136,6 @@ export class DashboardComponent implements OnInit {
     { name: 'Tools', value: 15, color: '#ef4444' },
     { name: 'Other', value: 5, color: '#8b5cf6' }
   ];
-
-constructor(private productService: ProductService , private userService: UserService) {}
 
   // Classes CSS conditionnelles
   get bgClass(): string {
@@ -161,14 +188,6 @@ constructor(private productService: ProductService , private userService: UserSe
     console.log('Product edited:', product);
   }
 
-  // onProductDeleted(product: Product): void {
-  //   console.log('Product deleted:', product);
-  //   const index = this.products.findIndex(p => p.id === product.id);
-  //   if (index > -1) {
-  //     this.products.splice(index, 1);
-  //   }
-  // }
-
   onProductAdded(): void {
     console.log('Add new product clicked');
   }
@@ -180,32 +199,32 @@ constructor(private productService: ProductService , private userService: UserSe
 
   getStats(): StatCard[] {
     return [
-      { 
-        title: 'Total Stock Value', 
-        value: this.mockAnalytics.totalStockValue, 
-        icon: 'package', 
-        trend: 'neutral' 
+      {
+        title: 'Total Stock Value',
+        value: this.mockAnalytics.totalStockValue,
+        icon: 'package',
+        trend: 'neutral'
       },
-      { 
-        title: 'Total Sales', 
-        value: this.mockAnalytics.totalSales, 
-        icon: 'trending-up', 
-        change: this.mockAnalytics.salesGrowth, 
-        trend: 'up' 
+      {
+        title: 'Total Sales',
+        value: this.mockAnalytics.totalSales,
+        icon: 'trending-up',
+        change: this.mockAnalytics.salesGrowth,
+        trend: 'up'
       },
-      { 
-        title: 'Total Purchases', 
-        value: this.mockAnalytics.totalPurchases, 
-        icon: 'shopping-cart', 
-        change: this.mockAnalytics.purchaseGrowth, 
-        trend: 'down' 
+      {
+        title: 'Total Purchases',
+        value: this.mockAnalytics.totalPurchases,
+        icon: 'shopping-cart',
+        change: this.mockAnalytics.purchaseGrowth,
+        trend: 'down'
       },
-      { 
-        title: 'Net Profit', 
-        value: this.mockAnalytics.profit, 
-        icon: 'dollar-sign', 
-        change: this.mockAnalytics.profitGrowth, 
-        trend: 'up' 
+      {
+        title: 'Net Profit',
+        value: this.mockAnalytics.profit,
+        icon: 'dollar-sign',
+        change: this.mockAnalytics.profitGrowth,
+        trend: 'up'
       }
     ];
   }
@@ -246,6 +265,7 @@ constructor(private productService: ProductService , private userService: UserSe
     const iconMap: { [key: string]: string } = {
       'grid': '📊',
       'package': '📦',
+      'warehouse': '🏭', // Added warehouse icon
       'truck': '🚚',
       'users': '👥',
       'credit-card': '💳',

@@ -8,7 +8,7 @@ import { User } from '../users/user.model';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'http://161.97.128.217:8081/users';
+    private apiUrl = 'http://161.97.128.217:8081/users';
 
   constructor(private http: HttpClient) {}
 
@@ -21,7 +21,6 @@ export class UserService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    console.error('API Error:', error);
     return throwError(() => error);
   }
 

@@ -1,0 +1,167 @@
+<div class="warehouses-container">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold">Warehouses Management</h2>
+    <button
+      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      (click)="showAddForm = true; isEditing = false; warehouseForm = { name: '', ville: '' }"
+    >
+      + Add Warehouse
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+    <div class="flex items-center">
+      <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span class="text-red-700">{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Add/Edit Warehouse Form -->
+  <div *ngIf="showAddForm" class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+    <h3 class="text-lg font-semibold mb-4">
+      {{ isEditing ? 'Edit Warehouse' : 'Add New Warehouse' }}
+    </h3>
+
+    <form (ngSubmit)="onSubmitWarehouseForm()" class="space-y-4">
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+          Warehouse Name *
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="warehouseForm.name"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter warehouse name"
+        >
+      </div>
+
+      <div>
+        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">
+          Ville *
+        </label>
+        <input
+          type="text"
+          id="ville"
+          name="ville"
+          [(ngModel)]="warehouseForm.ville"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Enter ville"
+        >
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-4">
+        <button
+          type="button"
+          (click)="resetForm()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center"
+          [disabled]="!warehouseForm.name || !warehouseForm.ville || isLoading"
+        >
+          <span *ngIf="isLoading" class="mr-2">
+            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          {{ isEditing ? 'Update Warehouse' : 'Add Warehouse' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading && warehouses.length === 0" class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+    <p class="text-gray-600">Loading warehouses...</p>
+  </div>
+
+  <!-- Warehouses Table -->
+  <div *ngIf="!isLoading" class="overflow-x-auto">
+    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+      <thead class="bg-gray-50">
+      <tr>
+        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">ID</th>
+        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Name</th>
+        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Ville</th>
+        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let warehouse of warehouses" class="hover:bg-gray-50">
+        <td class="py-3 px-4 border-b text-sm text-gray-700">
+          {{ warehouse.id || 'N/A' }}
+        </td>
+        <td class="py-3 px-4 border-b text-sm text-gray-700 font-medium">
+          {{ warehouse.name }}
+        </td>
+        <td class="py-3 px-4 border-b text-sm text-gray-700">
+          {{ warehouse.ville }}
+        </td>
+        <td class="py-3 px-4 border-b">
+          <div class="flex space-x-2">
+            <button
+              class="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+              (click)="onEditClick(warehouse)"
+            >
+              Edit
+            </button>
+            <button
+              class="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+              (click)="onDeleteWarehouse(warehouse.id)"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="warehouses.length === 0 && !showAddForm && !isLoading" class="text-center py-12">
+      <div class="text-gray-400 mb-4">
+        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No Warehouses Found</h3>
+      <p class="text-gray-500 mb-4">Get started by adding your first warehouse.</p>
+      <button
+        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        (click)="showAddForm = true; isEditing = false; warehouseForm = { name: '', ville: '' }"
+      >
+        Add Warehouse
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistics Card -->
+  <div *ngIf="warehouses.length > 0 && !isLoading" class="mt-8">
+    <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+      <div class="flex items-center">
+        <div class="p-3 bg-blue-100 rounded-lg mr-4">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-blue-600">Total Warehouses</p>
+          <p class="text-2xl font-bold text-gray-900">{{ warehouses.length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

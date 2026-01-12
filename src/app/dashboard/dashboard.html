@@ -1,137 +1,153 @@
 <!-- dashboard.html -->
 <div class="min-h-screen flex" [class]="bgClass">
-  
-<!-- Sidebar -->
+
+  <!-- Sidebar -->
   <div class="w-64 border-r" [class]="borderColor + ' ' + cardBg">
     <div class="p-4">
       <h2 class="text-xl font-bold mb-6" [class]="textPrimary">
         <span class="mr-2">📊</span> InventoryPro
       </h2>
       <nav>
-      <ul class="space-y-2">
-  <li>
-    <button
-      (click)="setCurrentView('dashboard')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'dashboard' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'dashboard' && darkMode"
-      [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'dashboard' && darkMode"
-    >
-      <i class="fas fa-tachometer-alt mr-3"></i>
-      Dashboard
-    </button>
-  </li>
+        <ul class="space-y-2">
+          <li>
+            <button
+              (click)="setCurrentView('dashboard')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'dashboard' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'dashboard' && darkMode"
+              [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'dashboard' && darkMode"
+            >
+              <i class="fas fa-tachometer-alt mr-3"></i>
+              Dashboard
+            </button>
+          </li>
 
-  <li>
-    <button
-      (click)="setCurrentView('users')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'users' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'users' && darkMode"
-      [class]="currentView !== 'users' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'users' && darkMode"
-    >
-      <i class="fas fa-users mr-3"></i>
-      Users
-    </button>
-  </li>
+          <li>
+            <button
+              (click)="setCurrentView('users')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'users' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'users' && darkMode"
+              [class]="currentView !== 'users' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'users' && darkMode"
+            >
+              <i class="fas fa-users mr-3"></i>
+              Users
+            </button>
+          </li>
 
-  <li>
-    <button
-      (click)="setCurrentView('products')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'products' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'products' && darkMode"
-      [class]="currentView !== 'products' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'products' && darkMode"
-    >
-      <i class="fas fa-box mr-3"></i>
-      Products
-    </button>
-  </li>
-  
-  <li>
-    <button
-      (click)="setCurrentView('suppliers')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'suppliers' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'suppliers' && darkMode"
-      [class]="currentView !== 'suppliers' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'suppliers' && darkMode"
-    >
-      <i class="fas fa-industry mr-3"></i>
-      Suppliers
-    </button>
-  </li>
-  
-  <li>
-    <button
-      (click)="setCurrentView('customers')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'customers' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'customers' && darkMode"
-      [class]="currentView !== 'customers' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'customers' && darkMode"
-    >
-      <i class="fas fa-user-friends mr-3"></i>
-      Customers
-    </button>
-  </li>
-  
-  <li>
-    <button
-      (click)="setCurrentView('transactions')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'transactions' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'transactions' && darkMode"
-      [class]="currentView !== 'transactions' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'transactions' && darkMode"
-    >
-      <i class="fas fa-exchange-alt mr-3"></i>
-      Transactions
-    </button>
-  </li>
-  
-  <li>
-    <button
-      (click)="setCurrentView('reports')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'reports' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'reports' && darkMode"
-      [class]="currentView !== 'reports' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'reports' && darkMode"
-    >
-      <i class="fas fa-chart-bar mr-3"></i>
-      Reports
-    </button>
-  </li>
-  
-  <li>
-    <button
-      (click)="setCurrentView('settings')"
-      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-      [class.bg-blue-100.text-blue-600]="currentView === 'settings' && !darkMode"
-      [class.bg-blue-900.text-blue-300]="currentView === 'settings' && darkMode"
-      [class]="currentView !== 'settings' ? textSecondary + ' hover:bg-gray-100' : ''"
-      [class.hover:bg-gray-700]="currentView !== 'settings' && darkMode"
-    >
-      <i class="fas fa-cog mr-3"></i>
-      Settings
-    </button>
-  </li>
-</ul>
+          <li>
+            <button
+              (click)="setCurrentView('products')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'products' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'products' && darkMode"
+              [class]="currentView !== 'products' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'products' && darkMode"
+            >
+              <i class="fas fa-box mr-3"></i>
+              Products
+            </button>
+          </li>
+
+          <li>
+            <button
+              (click)="setCurrentView('suppliers')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'suppliers' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'suppliers' && darkMode"
+              [class]="currentView !== 'suppliers' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'suppliers' && darkMode"
+            >
+              <i class="fas fa-industry mr-3"></i>
+              Suppliers
+            </button>
+          </li>
+
+          <!-- Warehouses menu item - FIXED: This should remain in the sidebar -->
+          <li>
+            <button
+              (click)="setCurrentView('warehouses')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'warehouses' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'warehouses' && darkMode"
+              [class]="currentView !== 'warehouses' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'warehouses' && darkMode"
+            >
+              <i class="fas fa-warehouse mr-3"></i>
+              Warehouses
+            </button>
+          </li>
+
+          <li>
+            <button
+              (click)="setCurrentView('customers')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'customers' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'customers' && darkMode"
+              [class]="currentView !== 'customers' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'customers' && darkMode"
+            >
+              <i class="fas fa-user-friends mr-3"></i>
+              Customers
+            </button>
+          </li>
+
+          <li>
+            <button
+              (click)="setCurrentView('transactions')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'transactions' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'transactions' && darkMode"
+              [class]="currentView !== 'transactions' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'transactions' && darkMode"
+            >
+              <i class="fas fa-exchange-alt mr-3"></i>
+              Transactions
+            </button>
+          </li>
+
+          <li>
+            <button
+              (click)="setCurrentView('reports')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'reports' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'reports' && darkMode"
+              [class]="currentView !== 'reports' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'reports' && darkMode"
+            >
+              <i class="fas fa-chart-bar mr-3"></i>
+              Reports
+            </button>
+          </li>
+
+          <li>
+            <button
+              (click)="setCurrentView('settings')"
+              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+              [class.bg-blue-100.text-blue-600]="currentView === 'settings' && !darkMode"
+              [class.bg-blue-900.text-blue-300]="currentView === 'settings' && darkMode"
+              [class]="currentView !== 'settings' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'settings' && darkMode"
+            >
+              <i class="fas fa-cog mr-3"></i>
+              Settings
+            </button>
+          </li>
+        </ul>
       </nav>
     </div>
   </div>
+
   <!-- Main content -->
   <div class="flex-1 overflow-auto">
     <!-- Header -->
     <header class="sticky top-0 z-10 border-b" [class]="borderColor + ' ' + cardBg">
       <div class="px-6 py-4 flex justify-between items-center">
         <div class="flex items-center">
-          <button 
-            (click)="toggleSidebar()" 
+          <button
+            (click)="toggleSidebar()"
             class="mr-4 p-2 rounded-lg hover:bg-gray-100"
             [class.hover:bg-gray-700]="darkMode"
           >
@@ -141,7 +157,7 @@
             {{ getCurrentViewLabel() }}
           </h1>
         </div>
-        
+
         <div class="flex items-center space-x-4">
           <!-- Barre de recherche (seulement sur la vue produits) -->
           <div *ngIf="currentView === 'products'" class="relative">
@@ -159,19 +175,19 @@
               [class.text-white]="darkMode"
             />
           </div>
-          
+
           <!-- Bouton mode sombre -->
-          <button 
-            (click)="toggleDarkMode()" 
+          <button
+            (click)="toggleDarkMode()"
             class="p-2 rounded-lg hover:bg-gray-100"
             [class.hover:bg-gray-700]="darkMode"
             [class]="textSecondary"
           >
             {{ getIcon(darkMode ? 'sun' : 'moon') }}
           </button>
-          
+
           <!-- Notification -->
-          <button class="p-2 rounded-lg hover:bg-gray-100" 
+          <button class="p-2 rounded-lg hover:bg-gray-100"
                   [class.hover:bg-gray-700]="darkMode"
                   [class]="textSecondary">
             {{ getIcon('bell') }}
@@ -182,13 +198,13 @@
 
     <!-- Contenu principal -->
     <main class="p-6">
-      
+
       <!-- Vue Dashboard -->
       <div *ngIf="currentView === 'dashboard'">
         <!-- Statistiques -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div *ngFor="let stat of getStats()" 
-               class="rounded-xl border p-6" 
+          <div *ngFor="let stat of getStats()"
+               class="rounded-xl border p-6"
                [class]="cardBg + ' ' + borderColor">
             <div class="flex justify-between items-start mb-4">
               <div>
@@ -221,7 +237,7 @@
               <div *ngFor="let category of categoryData" class="flex items-center">
                 <div class="w-24" [class]="textSecondary">{{ category.name }}</div>
                 <div class="flex-1 h-4 rounded-full bg-gray-200 overflow-hidden">
-                  <div [style.width.%]="category.value" 
+                  <div [style.width.%]="category.value"
                        [style.background-color]="category.color"
                        class="h-full"></div>
                 </div>
@@ -229,7 +245,7 @@
               </div>
             </div>
           </div>
-        
+
         </div>
       </div>
 
@@ -241,10 +257,16 @@
         ></app-product>
       </div>
 
-       <!-- Vue Users -->
+      <!-- Vue Users -->
       <div *ngIf="currentView === 'users'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
         <app-user [users]="users" (usersChanged)="onUsersChanged($event)"></app-user>
       </div>
+
+      <!-- Vue Warehouses - FIXED: Moved to main content area -->
+      <div *ngIf="currentView === 'warehouses'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+        <app-warehouses [warehouses]="warehouses"></app-warehouses>
+      </div>
+
       <!-- Vue Suppliers -->
       <div *ngIf="currentView === 'suppliers'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
         <h3 class="text-xl font-bold mb-4" [class]="textPrimary">Suppliers</h3>
@@ -252,7 +274,7 @@
       </div>
 
       <!-- Autres vues -->
-      <div *ngIf="['customers', 'transactions', 'reports', 'settings'].includes(currentView)" 
+      <div *ngIf="['customers', 'transactions', 'reports', 'settings'].includes(currentView)"
            class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
         <h3 class="text-xl font-bold mb-4" [class]="textPrimary">{{ getCurrentViewLabel() }}</h3>
         <p [class]="textSecondary">{{ getCurrentViewLabel() }} management coming soon...</p>

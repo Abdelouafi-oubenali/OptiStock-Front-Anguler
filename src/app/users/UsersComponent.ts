@@ -75,6 +75,7 @@ getEmptyUser(): User {
   openEditModal(user: User): void {
     this.modalMode = 'edit';
 
+    console.log(this.modalMode) ;
     this.selectedUser = { ...user };
     this.showModal = true;
     this.errorMessage = '';
@@ -105,7 +106,6 @@ onSubmit(): void {
         this.usersChanged.emit(this.users);
         this.successMessage = 'User created successfully!';
 
-        // Fermer le modal après un court délai pour voir le message
         setTimeout(() => {
           this.closeModal();
         }, 1500);
@@ -132,7 +132,6 @@ onSubmit(): void {
         }
         this.successMessage = 'User updated successfully!';
 
-        // Fermer le modal après un court délai pour voir le message
         setTimeout(() => {
           this.closeModal();
         }, 1500);
