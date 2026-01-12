@@ -1,1 +1,263 @@
-<p>users works!</p>
+<div class="p-6">
+  <!-- Header avec bouton d'ajout -->
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h3 class="text-xl font-bold">Users Management</h3>
+      <p class="text-gray-600 mt-1">Total users: {{ filteredUsers.length }}</p>
+    </div>
+    <button
+      (click)="openAddModal()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+    >
+      <span class="mr-2">+</span> Add New User
+    </button>
+  </div>
+
+  <!-- Messages d'alerte -->
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+    {{ successMessage }}
+  </div>
+
+  <!-- Filtres -->
+  <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="relative">
+      <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search users..."
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <select
+      [(ngModel)]="selectedRole"
+      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="all">All Roles</option>
+      <option value="ADMIN"> Admin </option>
+      <option value="CLIENT"> Client </option>
+      <option value="WAREHOUSE_MANAGER">Warehose manger </option>
+    </select>
+
+    <div class="text-right">
+      <span class="text-gray-600">
+        Showing {{ paginatedUsers.length }} of {{ filteredUsers.length }} users
+      </span>
+    </div>
+  </div>
+
+  <!-- Table des utilisateurs -->
+  <div class="overflow-x-auto bg-white rounded-lg shadow">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let user of paginatedUsers" class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <span class="text-blue-600 font-medium">
+                  {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                </span>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">
+                  {{ user.firstName }} {{ user.lastName }}
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">{{ user.email }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  [class.bg-red-100.text-red-800]="user.role === 'ADMIN'"
+                  [class.bg-green-100.text-green-800]="user.role === 'USER'"
+                  [class.bg-yellow-100.text-yellow-800]="user.role === 'MODERATOR'">
+              {{ user.role }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button
+              (click)="openEditModal(user)"
+              class="text-blue-600 hover:text-blue-900 mr-3 transition-colors"
+            >
+              Edit
+            </button>
+            <button
+              (click)="deleteUser(user)"
+              class="text-red-600 hover:text-red-900 transition-colors"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <!-- Message si aucun utilisateur -->
+        <tr *ngIf="paginatedUsers.length === 0">
+          <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+            No users found
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-6 flex justify-between items-center">
+    <div class="text-sm text-gray-600">
+      Page {{ currentPage }} of {{ totalPages }}
+    </div>
+    <div class="flex space-x-2">
+      <button
+        (click)="changePage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+        class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+      >
+        Previous
+      </button>
+
+      <div class="flex space-x-1">
+        <button
+          *ngFor="let page of pageNumbers"
+          (click)="changePage(page)"
+          [class.bg-blue-600.text-white]="page === currentPage"
+          [class.bg-gray-100.text-gray-700]="page !== currentPage"
+          class="px-3 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        (click)="changePage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+        class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal pour ajouter/modifier un utilisateur -->
+<div *ngIf="showModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+  <!-- Arrière-plan - ferme le modal quand on clique dessus -->
+  <div class="absolute inset-0" (click)="closeModal()"></div>
+
+  <!-- Contenu du modal - empêche la fermeture quand on clique dedans -->
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md relative z-10" (click)="$event.stopPropagation()">
+    <div class="px-6 py-4 border-b flex justify-between items-center">
+      <h3 class="text-lg font-semibold">
+        {{ modalMode === 'add' ? 'Add New User' : 'Edit User' }}
+      </h3>
+      <button
+        type="button"
+        (click)="closeModal()"
+        class="text-gray-400 hover:text-gray-500"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+        <input
+          type="text"
+          [(ngModel)]="selectedUser.firstName"
+          name="firstName"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+        <input
+          type="text"
+          [(ngModel)]="selectedUser.lastName"
+          name="lastName"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+        <input
+          type="email"
+          [(ngModel)]="selectedUser.email"
+          name="email"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div *ngIf="modalMode === 'add'">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+        <input
+          type="password"
+          [(ngModel)]="selectedUser.password"
+          name="password"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+        <select
+          [(ngModel)]="selectedUser.role"
+          name="role"
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="CLIENT">Cient</option>
+          <option value="ADMIN">Admin</option>
+          <option value="WAREHOUSE_MANAGER">wharehose manger</option>
+        </select>
+      </div>
+
+      <!-- Messages d'erreur dans le modal -->
+      <div *ngIf="errorMessage" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+        {{ successMessage }}
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-4">
+        <button
+          type="button"
+          (click)="closeModal()"
+          [disabled]="isSubmitting"
+          class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ isSubmitting ? 'Saving...' : (modalMode === 'add' ? 'Create User' : 'Update User') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

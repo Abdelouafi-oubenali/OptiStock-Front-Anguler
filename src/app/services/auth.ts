@@ -10,6 +10,6 @@ export class AuthService {
 
   login(data: any) {
     console.log('AuthService login called with data:', data);
-    return this.http.post('http://161.97.128.217:8080/api/auth/login', data);
+    return this.http.post('http://161.97.128.217:8081/api/auth/login', data);
   }
 }

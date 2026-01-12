@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product, ProductComponent } from '../product/product';
 import { ProductService } from '../services/product-service';
+import { UserService } from '../services/user-service';
+import { UserComponent } from '../users/UsersComponent';
+import { User } from '../users/user.model';
 
 interface MenuItem {
   id: string;
@@ -21,7 +24,7 @@ interface StatCard {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductComponent],
+  imports: [CommonModule, FormsModule, ProductComponent , UserComponent],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
@@ -56,11 +59,12 @@ export class DashboardComponent implements OnInit {
 
   // Données des produits
   products: Product[] = [];
+  users: User[] = [];
 
   ngOnInit(): void {
     this.loadProducts();
+    this.loadUsers(); 
   }
-
   loadProducts(): void {
     this.productService.getProducts().subscribe({
       next: (data) => {
@@ -73,6 +77,27 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Données de users 
+
+     loadUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        console.log('Users loaded in dashboard:', data);
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+      }
+    });
+  }
+
+   onUsersChanged(updatedUsers: User[]): void {
+    this.users = updatedUsers;
+    console.log('Users updated:', updatedUsers);
+  }
+
+
+
 
 
   categoryData = [
@@ -83,7 +108,7 @@ export class DashboardComponent implements OnInit {
     { name: 'Other', value: 5, color: '#8b5cf6' }
   ];
 
-constructor(private productService: ProductService) {}
+constructor(private productService: ProductService , private userService: UserService) {}
 
   // Classes CSS conditionnelles
   get bgClass(): string {

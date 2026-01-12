@@ -1,32 +1,129 @@
 <!-- dashboard.html -->
 <div class="min-h-screen flex" [class]="bgClass">
   
-  <!-- Sidebar -->
-  <div *ngIf="sidebarOpen" class="w-64 border-r" [class]="borderColor + ' ' + cardBg">
+<!-- Sidebar -->
+  <div class="w-64 border-r" [class]="borderColor + ' ' + cardBg">
     <div class="p-4">
       <h2 class="text-xl font-bold mb-6" [class]="textPrimary">
         <span class="mr-2">📊</span> InventoryPro
       </h2>
       <nav>
-        <ul class="space-y-2">
-          <li *ngFor="let item of menuItems">
-            <button
-              (click)="setCurrentView(item.id)"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100.text-blue-600]="currentView === item.id && !darkMode"
-              [class.bg-blue-900.text-blue-300]="currentView === item.id && darkMode"
-              [class]="currentView !== item.id ? textSecondary + ' hover:bg-gray-100' : ''"
-              [class.hover:bg-gray-700]="currentView !== item.id && darkMode"
-            >
-              <span class="mr-3">{{ getIcon(item.icon) }}</span>
-              {{ item.label }}
-            </button>
-          </li>
-        </ul>
+      <ul class="space-y-2">
+  <li>
+    <button
+      (click)="setCurrentView('dashboard')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'dashboard' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'dashboard' && darkMode"
+      [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'dashboard' && darkMode"
+    >
+      <i class="fas fa-tachometer-alt mr-3"></i>
+      Dashboard
+    </button>
+  </li>
+
+  <li>
+    <button
+      (click)="setCurrentView('users')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'users' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'users' && darkMode"
+      [class]="currentView !== 'users' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'users' && darkMode"
+    >
+      <i class="fas fa-users mr-3"></i>
+      Users
+    </button>
+  </li>
+
+  <li>
+    <button
+      (click)="setCurrentView('products')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'products' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'products' && darkMode"
+      [class]="currentView !== 'products' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'products' && darkMode"
+    >
+      <i class="fas fa-box mr-3"></i>
+      Products
+    </button>
+  </li>
+  
+  <li>
+    <button
+      (click)="setCurrentView('suppliers')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'suppliers' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'suppliers' && darkMode"
+      [class]="currentView !== 'suppliers' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'suppliers' && darkMode"
+    >
+      <i class="fas fa-industry mr-3"></i>
+      Suppliers
+    </button>
+  </li>
+  
+  <li>
+    <button
+      (click)="setCurrentView('customers')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'customers' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'customers' && darkMode"
+      [class]="currentView !== 'customers' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'customers' && darkMode"
+    >
+      <i class="fas fa-user-friends mr-3"></i>
+      Customers
+    </button>
+  </li>
+  
+  <li>
+    <button
+      (click)="setCurrentView('transactions')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'transactions' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'transactions' && darkMode"
+      [class]="currentView !== 'transactions' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'transactions' && darkMode"
+    >
+      <i class="fas fa-exchange-alt mr-3"></i>
+      Transactions
+    </button>
+  </li>
+  
+  <li>
+    <button
+      (click)="setCurrentView('reports')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'reports' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'reports' && darkMode"
+      [class]="currentView !== 'reports' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'reports' && darkMode"
+    >
+      <i class="fas fa-chart-bar mr-3"></i>
+      Reports
+    </button>
+  </li>
+  
+  <li>
+    <button
+      (click)="setCurrentView('settings')"
+      class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
+      [class.bg-blue-100.text-blue-600]="currentView === 'settings' && !darkMode"
+      [class.bg-blue-900.text-blue-300]="currentView === 'settings' && darkMode"
+      [class]="currentView !== 'settings' ? textSecondary + ' hover:bg-gray-100' : ''"
+      [class.hover:bg-gray-700]="currentView !== 'settings' && darkMode"
+    >
+      <i class="fas fa-cog mr-3"></i>
+      Settings
+    </button>
+  </li>
+</ul>
       </nav>
     </div>
   </div>
-
   <!-- Main content -->
   <div class="flex-1 overflow-auto">
     <!-- Header -->
@@ -144,6 +241,10 @@
         ></app-product>
       </div>
 
+       <!-- Vue Users -->
+      <div *ngIf="currentView === 'users'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+        <app-user [users]="users" (usersChanged)="onUsersChanged($event)"></app-user>
+      </div>
       <!-- Vue Suppliers -->
       <div *ngIf="currentView === 'suppliers'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
         <h3 class="text-xl font-bold mb-4" [class]="textPrimary">Suppliers</h3>
