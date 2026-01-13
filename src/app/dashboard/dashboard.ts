@@ -9,6 +9,10 @@ import { User } from '../users/user.model';
 import { warehouses } from '../warehouses/warehouses.model';
 import { WarehousesComponent } from '../warehouses/warehousesComponent';
 import { WarehousesService } from '../services/warehoses-serviece';
+import {InventoryComponent} from '../inventory-component/inventory-component';
+import {InventoryDataLoding} from '../inventory-component/inventory.model';
+import {InventoryService} from '../services/inventory-service';
+import {InventoryView} from '../inventory-component/inventory-view.model';
 
 interface MenuItem {
   id: string;
@@ -27,7 +31,7 @@ interface StatCard {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductComponent, UserComponent, WarehousesComponent],
+  imports: [CommonModule, FormsModule, ProductComponent, UserComponent, WarehousesComponent , InventoryComponent],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
@@ -39,12 +43,21 @@ export class DashboardComponent implements OnInit {
   currentPage = 1;
   itemsPerPage = 10;
 
+  // État de chargement
+  isLoading = {
+    products: false,
+    users: false,
+    warehouses: false,
+    inventories: false
+  };
+
   // Données mockées
   menuItems: MenuItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: 'grid' },
     { id: 'users', label: 'Users', icon: 'users' },
     { id: 'products', label: 'Products', icon: 'package' },
     { id: 'warehouses', label: 'Warehouses', icon: 'warehouse' },
+    { id: 'inventories', label: 'Inventories', icon: 'boxes' },
     { id: 'suppliers', label: 'Suppliers', icon: 'truck' },
     { id: 'customers', label: 'Customers', icon: 'users' },
     { id: 'transactions', label: 'Transactions', icon: 'credit-card' },
@@ -62,71 +75,233 @@ export class DashboardComponent implements OnInit {
     profitGrowth: 8.7
   };
 
-  // Données des produits
+  // Données
   products: Product[] = [];
   users: User[] = [];
   warehouses: warehouses[] = [];
+  inventoryView: InventoryView[] = [];
+
+  // Maps pour cache
+  private productMap: Map<string, Product> = new Map();
+  private warehouseMap: Map<string, warehouses> = new Map();
 
   constructor(
     private productService: ProductService,
     private userService: UserService,
-    private warehousesService: WarehousesService
+    private warehousesService: WarehousesService,
+    private inventoryService: InventoryService,
   ) { }
 
-  ngOnInit(): void {
-    this.loadProducts();
-    this.loadUsers();
-    console.log("test warehouses loaded");
-    this.loadWarehouses();
+  async ngOnInit(): Promise<void> {
+    try {
+      await Promise.all([
+        this.loadProducts(),
+        this.loadWarehouses()
+      ]);
+
+      this.loadInventories();
+
+      this.loadUsers();
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    }
   }
 
-  loadProducts(): void {
-    this.productService.getProducts().subscribe({
-      next: (data) => {
-        this.products = data;
-        console.log('Products loaded in dashboard:', data);
-      },
-      error: (err) => {
-        console.error('Error loading products:', err);
-      }
+  loadProducts(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.isLoading.products = true;
+      this.productService.getProducts().subscribe({
+        next: (data) => {
+          this.products = data;
+          this.productMap.clear();
+          data.forEach(product => {
+            if(product.id == undefined) {
+              return ;
+            }
+            this.productMap.set(product.id, product);
+          });
+          this.isLoading.products = false;
+          console.log('Products loaded in dashboard:', data);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading products:', err);
+          this.isLoading.products = false;
+          reject(err);
+        }
+      });
     });
   }
 
-  // Données de users
   loadUsers(): void {
+    this.isLoading.users = true;
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
+        this.isLoading.users = false;
         console.log('Users loaded in dashboard:', data);
       },
       error: (err) => {
         console.error('Error loading users:', err);
+        this.isLoading.users = false;
       }
     });
   }
 
+  loadWarehouses(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.isLoading.warehouses = true;
+      this.warehousesService.getWarehouses().subscribe({
+        next: (data) => {
+          this.warehouses = data;
+          this.warehouseMap.clear();
+          data.forEach(warehouse => {
+            if(warehouse.id == undefined) {
+              return
+            }
+            this.warehouseMap.set(warehouse.id, warehouse);
+          });
+          this.isLoading.warehouses = false;
+          console.log('Warehouses loaded in dashboard:', data);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading warehouses:', err);
+          this.isLoading.warehouses = false;
+          reject(err);
+        }
+      });
+    });
+  }
+
+  loadInventories(): void {
+    if (this.products.length === 0 || this.warehouses.length === 0) {
+      console.warn('Products or warehouses not loaded yet, retrying...');
+      setTimeout(() => this.loadInventories(), 1000);
+      return;
+    }
+
+    this.isLoading.inventories = true;
+    this.inventoryService.getInventories().subscribe({
+      next: (data) => {
+        this.inventoryView = data.map(inv => ({
+          id: inv.id,
+          qtyOnHand: inv.qtyOnHand,
+          qtyReserved: inv.qtyReserved,
+          referenceDocument: inv.referenceDocument,
+          productName: this.getProductById(inv.product_id),
+          warehouseName: this.getWarehouseById(inv.warehouse_id),
+        }));
+        this.isLoading.inventories = false;
+        console.log('Inventories loaded in dashboard:', this.inventoryView);
+      },
+      error: (err) => {
+        console.error('Error loading inventories:', err);
+        this.isLoading.inventories = false;
+      }
+    });
+  }
+
+  // Helper methods avec cache
+  private getProductById(id: string): string {
+    return this.productMap.get(id)?.name ?? 'Unknown product';
+  }
+
+  private getWarehouseById(id: string): string {
+    return this.warehouseMap.get(id)?.name ?? 'Unknown warehouse';
+  }
+
+  // Event handlers
   onUsersChanged(updatedUsers: User[]): void {
     this.users = updatedUsers;
     console.log('Users updated:', updatedUsers);
   }
 
-  // Données de warehouses - Fixed method name and error handling
-  loadWarehouses(): void {
-    this.warehousesService.getWarehouses().subscribe({
-      next: (data) => {
-        this.warehouses = data;
-        console.log('Warehouses loaded in dashboard:', data);
-      },
-      error: (err) => {
-        console.error('Error loading warehouses:', err);
-      }
-    });
-  }
-
-
   onWarehousesChanged(updatedWarehouses: warehouses[]): void {
     this.warehouses = updatedWarehouses;
+    // Mettre à jour le cache
+    this.warehouseMap.clear();
+    updatedWarehouses.forEach(warehouse => {
+      if(warehouse.id == undefined) {
+        return;
+      }
+      this.warehouseMap.set(warehouse.id, warehouse);
+    });
     console.log('Warehouses updated in dashboard:', updatedWarehouses);
+  }
+
+  onProductChanged(updatedProducts: Product[]): void {
+    this.products = updatedProducts;
+    // Mettre à jour le cache
+    this.productMap.clear();
+    updatedProducts.forEach(product => {
+      if(product.id == undefined) {
+        return;
+      }
+      this.productMap.set(product.id, product);
+    });
+    console.log('Products updated in dashboard:', updatedProducts);
+  }
+
+  onInventoryChanged(updatedInventory: InventoryView[]): void {
+    this.inventoryView = updatedInventory;
+    console.log('Inventory updated:', updatedInventory);
+  }
+
+  // Gestion des données filtrées et paginées
+  get filteredData(): any[] {
+    switch (this.currentView) {
+      case 'products':
+        return this.filterItems(this.products);
+      case 'users':
+        return this.filterItems(this.users);
+      case 'warehouses':
+        return this.filterItems(this.warehouses);
+      case 'inventories':
+        return this.filterItems(this.inventoryView);
+      default:
+        return [];
+    }
+  }
+
+  private filterItems(items: any[]): any[] {
+    if (!this.searchQuery) return items;
+
+    const query = this.searchQuery.toLowerCase();
+    return items.filter(item =>
+      Object.values(item).some(value =>
+        value?.toString().toLowerCase().includes(query)
+      )
+    );
+  }
+
+  get paginatedData(): any[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredData.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredData.length / this.itemsPerPage);
+  }
+
+  // Fonction de rafraîchissement
+  refreshData(): void {
+    switch (this.currentView) {
+      case 'products':
+        this.loadProducts();
+        break;
+      case 'users':
+        this.loadUsers();
+        break;
+      case 'warehouses':
+        this.loadWarehouses();
+        break;
+      case 'inventories':
+        this.loadInventories();
+        break;
+      default:
+        this.ngOnInit();
+    }
   }
 
   categoryData = [
@@ -161,6 +336,7 @@ export class DashboardComponent implements OnInit {
   // Méthodes principales
   setCurrentView(view: string): void {
     this.currentView = view;
+    this.currentPage = 1;
   }
 
   toggleSidebar(): void {
@@ -177,6 +353,7 @@ export class DashboardComponent implements OnInit {
 
   onSearchChange(query: string): void {
     this.searchQuery = query;
+    this.currentPage = 1;
     console.log('Search query:', query);
   }
 
@@ -265,7 +442,8 @@ export class DashboardComponent implements OnInit {
     const iconMap: { [key: string]: string } = {
       'grid': '📊',
       'package': '📦',
-      'warehouse': '🏭', // Added warehouse icon
+      'warehouse': '🏭',
+      'boxes': '📦',
       'truck': '🚚',
       'users': '👥',
       'credit-card': '💳',
@@ -308,5 +486,15 @@ export class DashboardComponent implements OnInit {
   getChangeIcon(change: number | undefined): string {
     if (!change) return '';
     return change > 0 ? '↗' : '↘';
+  }
+
+  isLoadingView(): boolean {
+    switch (this.currentView) {
+      case 'products': return this.isLoading.products;
+      case 'users': return this.isLoading.users;
+      case 'warehouses': return this.isLoading.warehouses;
+      case 'inventories': return this.isLoading.inventories;
+      default: return false;
+    }
   }
 }

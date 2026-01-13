@@ -39,4 +39,10 @@ export class WarehousesService {
     const headers = this.getAuthHeaders();
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
+
+  getWarehoseById(id : string) : Observable<warehouses>
+  {
+    const headers = this.getAuthHeaders();
+    return this.http.get<warehouses>(`${this.apiUrl}/${id}`, { headers });
+  }
 }
