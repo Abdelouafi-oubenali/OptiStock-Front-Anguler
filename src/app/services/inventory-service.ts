@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {InventoryDataLoding} from '../inventory-component/inventory.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { InventoryDataLoding } from '../inventory-component/inventory.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InventoryService {
-
   private apiUrl = 'http://161.97.128.217:8081/api/inventories';
 
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
-
     let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
@@ -32,5 +30,18 @@ export class InventoryService {
     });
   }
 
+  createInventories(inventory: InventoryDataLoding): Observable<InventoryDataLoding> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<InventoryDataLoding>(this.apiUrl, inventory, { headers });
+  }
 
+  updateInventory(id: string, inventory: InventoryDataLoding): Observable<InventoryDataLoding> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<InventoryDataLoding>(`${this.apiUrl}/${id}`, inventory, { headers });
+  }
+
+  deleteInventory(id: string): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.apiUrl}/${id}`, { headers });
+  }
 }

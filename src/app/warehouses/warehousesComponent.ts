@@ -27,7 +27,6 @@ export class WarehousesComponent implements OnInit {
   constructor(private warehousesService: WarehousesService) {}
 
   ngOnInit(): void {
-    // If no warehouses are provided via @Input(), load them from service
     if (this.warehouses.length === 0) {
       this.loadWarehouses();
     }

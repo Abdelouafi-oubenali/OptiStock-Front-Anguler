@@ -1,4 +1,6 @@
 <!-- dashboard.html -->
+<script src="../inventory-component/inventory-view.model.ts"></script>
+<script src="../services/inventory-service.ts"></script>
 <script src="dashboard.ts"></script>
 <div class="min-h-screen flex" [class]="bgClass">
 
@@ -14,7 +16,7 @@
             <button
               (click)="setCurrentView('dashboard')"
               class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100.text-blue-600]="currentView === 'dashboard' && !darkMode"
+              [class.<app-inventorybg-blue-100.text-blue-600]="currentView === 'dashboard' && !darkMode"
               [class.bg-blue-900.text-blue-300]="currentView === 'dashboard' && darkMode"
               [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-gray-100' : ''"
               [class.hover:bg-gray-700]="currentView !== 'dashboard' && darkMode"
@@ -273,9 +275,13 @@
       </div>
 
       <div *ngIf="currentView === 'inventories'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
-        <app-inventory [inventories]="inventoryView"></app-inventory>
+        <app-inventory
+          [inventories]="inventoryView"
+          [products]="products"
+          [warehouses]="warehouses"
+          (inventoryCreated)="loadInventories()">
+        </app-inventory>
       </div>
-
       <!-- Vue Users -->
       <div *ngIf="currentView === 'users'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
         <app-user [users]="users" (usersChanged)="onUsersChanged($event)"></app-user>

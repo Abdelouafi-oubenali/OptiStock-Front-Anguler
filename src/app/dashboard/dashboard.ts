@@ -180,7 +180,6 @@ export class DashboardComponent implements OnInit {
       setTimeout(() => this.loadInventories(), 1000);
       return;
     }
-
     this.isLoading.inventories = true;
     this.inventoryService.getInventories().subscribe({
       next: (data) => {
