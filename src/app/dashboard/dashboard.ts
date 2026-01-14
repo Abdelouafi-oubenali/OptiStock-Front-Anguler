@@ -9,10 +9,12 @@ import { User } from '../users/user.model';
 import { warehouses } from '../warehouses/warehouses.model';
 import { WarehousesComponent } from '../warehouses/warehousesComponent';
 import { WarehousesService } from '../services/warehoses-serviece';
-import {InventoryComponent} from '../inventory-component/inventory-component';
-import {InventoryDataLoding} from '../inventory-component/inventory.model';
-import {InventoryService} from '../services/inventory-service';
-import {InventoryView} from '../inventory-component/inventory-view.model';
+import { InventoryComponent } from '../inventory-component/inventory-component';
+import { InventoryService } from '../services/inventory-service';
+import { InventoryView } from '../inventory-component/inventory-view.model';
+import { SuppliersComponent } from '../suppliers-component/suppliers-component';
+import { SuppliersService } from '../services/suppliers-service';
+import { Supplier } from '../suppliers-component/supplier.model';
 
 interface MenuItem {
   id: string;
@@ -31,7 +33,15 @@ interface StatCard {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductComponent, UserComponent, WarehousesComponent , InventoryComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ProductComponent,
+    UserComponent,
+    WarehousesComponent,
+    InventoryComponent,
+    SuppliersComponent
+  ],
   templateUrl: './dashboard.html'
 })
 export class DashboardComponent implements OnInit {
@@ -48,7 +58,8 @@ export class DashboardComponent implements OnInit {
     products: false,
     users: false,
     warehouses: false,
-    inventories: false
+    inventories: false,
+    suppliers: false
   };
 
   // Données mockées
@@ -80,6 +91,7 @@ export class DashboardComponent implements OnInit {
   users: User[] = [];
   warehouses: warehouses[] = [];
   inventoryView: InventoryView[] = [];
+  suppliers: Supplier[] = [];
 
   // Maps pour cache
   private productMap: Map<string, Product> = new Map();
@@ -90,17 +102,18 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private warehousesService: WarehousesService,
     private inventoryService: InventoryService,
+    private suppliersService: SuppliersService,
   ) { }
 
   async ngOnInit(): Promise<void> {
     try {
       await Promise.all([
         this.loadProducts(),
-        this.loadWarehouses()
+        this.loadWarehouses(),
+        this.loadSuppliers()
       ]);
 
       this.loadInventories();
-
       this.loadUsers();
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -115,8 +128,8 @@ export class DashboardComponent implements OnInit {
           this.products = data;
           this.productMap.clear();
           data.forEach(product => {
-            if(product.id == undefined) {
-              return ;
+            if (product.id == undefined) {
+              return;
             }
             this.productMap.set(product.id, product);
           });
@@ -156,7 +169,7 @@ export class DashboardComponent implements OnInit {
           this.warehouses = data;
           this.warehouseMap.clear();
           data.forEach(warehouse => {
-            if(warehouse.id == undefined) {
+            if (warehouse.id == undefined) {
               return
             }
             this.warehouseMap.set(warehouse.id, warehouse);
@@ -168,6 +181,25 @@ export class DashboardComponent implements OnInit {
         error: (err) => {
           console.error('Error loading warehouses:', err);
           this.isLoading.warehouses = false;
+          reject(err);
+        }
+      });
+    });
+  }
+
+  loadSuppliers(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.isLoading.suppliers = true;
+      this.suppliersService.getSuppliers().subscribe({
+        next: (data) => {
+          this.suppliers = data;
+          this.isLoading.suppliers = false;
+          console.log('Suppliers loaded in dashboard:', data);
+          resolve();
+        },
+        error: (err) => {
+          console.error('Error loading suppliers:', err);
+          this.isLoading.suppliers = false;
           reject(err);
         }
       });
@@ -218,10 +250,9 @@ export class DashboardComponent implements OnInit {
 
   onWarehousesChanged(updatedWarehouses: warehouses[]): void {
     this.warehouses = updatedWarehouses;
-    // Mettre à jour le cache
     this.warehouseMap.clear();
     updatedWarehouses.forEach(warehouse => {
-      if(warehouse.id == undefined) {
+      if (warehouse.id == undefined) {
         return;
       }
       this.warehouseMap.set(warehouse.id, warehouse);
@@ -229,22 +260,39 @@ export class DashboardComponent implements OnInit {
     console.log('Warehouses updated in dashboard:', updatedWarehouses);
   }
 
-  onProductChanged(updatedProducts: Product[]): void {
-    this.products = updatedProducts;
-    // Mettre à jour le cache
-    this.productMap.clear();
-    updatedProducts.forEach(product => {
-      if(product.id == undefined) {
-        return;
+  // CORRIGÉ : Gérer différents types d'événements
+  onProductEvent(event: any): void {
+    if (Array.isArray(event)) {
+      // Si c'est un tableau de produits
+      this.products = event;
+      this.productMap.clear();
+      event.forEach(product => {
+        if (product.id) {
+          this.productMap.set(product.id, product);
+        }
+      });
+      console.log('Products updated in dashboard:', event);
+    } else if (event && typeof event === 'object' && event.id) {
+      // Si c'est un seul produit
+      const index = this.products.findIndex(p => p.id === event.id);
+      if (index !== -1) {
+        this.products[index] = event;
+        if (event.id) {
+          this.productMap.set(event.id, event);
+        }
       }
-      this.productMap.set(product.id, product);
-    });
-    console.log('Products updated in dashboard:', updatedProducts);
+      console.log('Product updated in dashboard:', event);
+    }
   }
 
   onInventoryChanged(updatedInventory: InventoryView[]): void {
     this.inventoryView = updatedInventory;
     console.log('Inventory updated:', updatedInventory);
+  }
+
+  onSuppliersChanged(updatedSuppliers: Supplier[]): void {
+    this.suppliers = updatedSuppliers;
+    console.log('Suppliers updated in dashboard:', updatedSuppliers);
   }
 
   // Gestion des données filtrées et paginées
@@ -258,6 +306,8 @@ export class DashboardComponent implements OnInit {
         return this.filterItems(this.warehouses);
       case 'inventories':
         return this.filterItems(this.inventoryView);
+      case 'suppliers':
+        return this.filterItems(this.suppliers);
       default:
         return [];
     }
@@ -297,6 +347,9 @@ export class DashboardComponent implements OnInit {
         break;
       case 'inventories':
         this.loadInventories();
+        break;
+      case 'suppliers':
+        this.loadSuppliers();
         break;
       default:
         this.ngOnInit();
@@ -353,15 +406,10 @@ export class DashboardComponent implements OnInit {
   onSearchChange(query: string): void {
     this.searchQuery = query;
     this.currentPage = 1;
-    console.log('Search query:', query);
   }
 
   onProductViewed(product: Product): void {
     console.log('Product viewed:', product);
-  }
-
-  onProductEdited(product: Product): void {
-    console.log('Product edited:', product);
   }
 
   onProductAdded(): void {
@@ -400,6 +448,18 @@ export class DashboardComponent implements OnInit {
         value: this.mockAnalytics.profit,
         icon: 'dollar-sign',
         change: this.mockAnalytics.profitGrowth,
+        trend: 'up'
+      },
+      {
+        title: 'Total Suppliers',
+        value: this.suppliers.length,
+        icon: 'truck',
+        trend: 'up'
+      },
+      {
+        title: 'Active Suppliers',
+        value: this.suppliers.filter(s => s.active).length,
+        icon: 'users',
         trend: 'up'
       }
     ];
@@ -493,6 +553,7 @@ export class DashboardComponent implements OnInit {
       case 'users': return this.isLoading.users;
       case 'warehouses': return this.isLoading.warehouses;
       case 'inventories': return this.isLoading.inventories;
+      case 'suppliers': return this.isLoading.suppliers;
       default: return false;
     }
   }

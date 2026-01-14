@@ -10,6 +10,8 @@ export interface Product {
   sku: string;
   price: number;
   status?: string;
+  quantity?: number;
+  stock?: number;
 }
 
 @Component({
@@ -19,13 +21,12 @@ export interface Product {
   templateUrl: './product.html'
 })
 export class ProductComponent {
-
   constructor(private productService: ProductService) {}
 
   @Input() products: Product[] = [];
   @Input() searchQuery = '';
   @Input() darkMode = false;
-  
+
   @Output() searchChange = new EventEmitter<string>();
   @Output() productViewed = new EventEmitter<Product>();
   @Output() productEdited = new EventEmitter<Product>();
@@ -36,8 +37,18 @@ export class ProductComponent {
   showCreateForm = false;
   isEditMode = false;
   productToEdit: Product | null = null;
-
   newProduct: Product = this.getEmptyProduct();
+
+  private getEmptyProduct(): Product {
+    return {
+      name: '',
+      description: '',
+      sku: '',
+      price: 0,
+      status: 'In Stock',
+      quantity: 0
+    };
+  }
 
   openCreateForm(): void {
     this.isEditMode = false;
@@ -60,83 +71,66 @@ export class ProductComponent {
     this.newProduct = this.getEmptyProduct();
   }
 
-  // Créer un produit vide
-  private getEmptyProduct(): Product {
-    return {
-      name: '',
-      description: '',
-      sku: '',
-      price: 0,
-      status: 'In Stock'
-    };
-  }
-
-  // Créer un nouveau produit
   createProduct(): void {
     this.productService.createProduct(this.newProduct).subscribe({
       next: (createdProduct) => {
         const productWithStatus = {
           ...createdProduct,
-          status: createdProduct.status || 'In Stock'
+          status: createdProduct.status || 'In Stock',
+          quantity: createdProduct.quantity || 0
         };
-        
+
         this.products.push(productWithStatus);
         console.log('Product created successfully:', productWithStatus);
-        
+
         this.closeForm();
         this.productAdded.emit();
       },
       error: (error) => {
         console.error('Error creating product:', error);
-        // Gérer l'erreur ici
       }
     });
   }
 
+  updateProduct(): void {
+    if (!this.productToEdit) return;
 
-updateProduct(): void {
-  if (!this.productToEdit) return;
+    this.productService.updateProduct(this.newProduct).subscribe({
+      next: (updatedProduct) => {
+        const index = this.products.findIndex(p => p.id === this.productToEdit?.id);
+        console.log('Updating product at index:', index);
+        if (index !== -1) {
+          this.products[index] = {
+            ...updatedProduct,
+            status: updatedProduct.status || 'In Stock',
+            quantity: updatedProduct.quantity || 0
+          };
 
-  this.productService.updateProduct(this.newProduct).subscribe({
-    next: (updatedProduct) => {
-      const index = this.products.findIndex(p => p.id === this.productToEdit?.id);
-      console.log('Updating product at index:', index);
-      if (index !== -1) {
-        this.products[index] = {
-          ...updatedProduct,
-          status: updatedProduct.status || 'In Stock'
-        };
-        
-        console.log('Product updated successfully:', updatedProduct);
-        this.productEdited.emit(updatedProduct);
+          console.log('Product updated successfully:', updatedProduct);
+          this.productEdited.emit(updatedProduct);
+        }
+        this.closeForm();
+      },
+      error: (error) => {
+        console.error('Error updating product:', error);
       }
-      this.closeForm();
-    },
-    error: (error) => {
-      console.error('Error updating product:', error);
-      // Gérer l'erreur ici
-    }
-  });
-}
+    });
+  }
 
-//deleteProduct(productId: number): void {
+  deleteProduct(product: Product): void {
+    if(!product.id) return;
 
-deleteProduct(product: Product): void {
-  if(!product.id) return;
-  
-  this.productService.deleteProduct(product.id).subscribe({
-    next: () => {
-      this.products = this.products.filter(p => p.id !== product.id);
-      console.log('Product deleted successfully:', product.id);
-      this.productDeleted.emit(product);
-    },
-    error: (error) => {
-      console.error('Error deleting product:', error);
-      // Gérer l'erreur ici
-    }
-  });
-}
-
+    this.productService.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.id !== product.id);
+        console.log('Product deleted successfully:', product.id);
+        this.productDeleted.emit(product);
+      },
+      error: (error) => {
+        console.error('Error deleting product:', error);
+      }
+    });
+  }
 
   get filteredProducts(): Product[] {
     if (!this.searchQuery?.trim()) {
@@ -176,27 +170,26 @@ deleteProduct(product: Product): void {
   getStatusClass(status: string): string {
     switch (status) {
       case 'In Stock':
-        return this.darkMode 
-          ? 'bg-green-900/30 text-green-300' 
+        return this.darkMode
+          ? 'bg-green-900/30 text-green-300'
           : 'bg-green-100 text-green-700';
       case 'Low Stock':
-        return this.darkMode 
-          ? 'bg-orange-900/30 text-orange-300' 
+        return this.darkMode
+          ? 'bg-orange-900/30 text-orange-300'
           : 'bg-orange-100 text-orange-700';
       default:
-        return this.darkMode 
-          ? 'bg-red-900/30 text-red-300' 
+        return this.darkMode
+          ? 'bg-red-900/30 text-red-300'
           : 'bg-red-100 text-red-700';
     }
   }
 
   getActionBtnClass(): string {
-    return this.darkMode 
-      ? 'text-gray-400 hover:text-white hover:bg-gray-700' 
+    return this.darkMode
+      ? 'text-gray-400 hover:text-white hover:bg-gray-700'
       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100';
   }
 
-  // Méthode pour formater les nombres
   formatNumber(value: number): string {
     return value.toLocaleString('fr-FR', {
       minimumFractionDigits: 2,
@@ -204,7 +197,6 @@ deleteProduct(product: Product): void {
     });
   }
 
-  // Méthode pour obtenir les icônes
   getIcon(iconName: string): string {
     const iconMap: { [key: string]: string } = {
       'eye': '👁️',
@@ -215,10 +207,6 @@ deleteProduct(product: Product): void {
     };
     return iconMap[iconName] || '📦';
   }
-
-  // Méthodes d'actions qui émettent des événements
-
-
 
   onSearchChange(event: any): void {
     this.searchChange.emit(event.target.value);

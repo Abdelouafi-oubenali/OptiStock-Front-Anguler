@@ -1,0 +1,127 @@
+/* Animation pour les modales */
+.modal-enter {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-leave {
+  animation: fadeOut 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Style pour les statuts */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-active {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgb(21, 128, 61);
+}
+
+.status-inactive {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(185, 28, 28);
+}
+
+/* Dark mode support */
+.dark .status-active {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: rgb(74, 222, 128);
+}
+
+.dark .status-inactive {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: rgb(248, 113, 113);
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .mobile-table {
+    display: block;
+  }
+
+  .mobile-table thead {
+    display: none;
+  }
+
+  .mobile-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .mobile-table td {
+    display: block;
+    text-align: right;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .mobile-table td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: bold;
+  }
+
+  .mobile-table td:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Animation de chargement */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Transition pour les boutons */
+.button-transition {
+  transition: all 0.2s ease-in-out;
+}
+
+.button-transition:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Style pour les inputs en focus */
+.input-focus:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
