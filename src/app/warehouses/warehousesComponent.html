@@ -1,35 +1,52 @@
-<div class="warehouses-container">
+<div class="warehouses-container p-8">
   <!-- Header -->
-  <div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Warehouses Management</h2>
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h2 class="text-3xl font-bold text-blue-900 flex items-center">
+        <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        </svg>
+        Warehouses Management
+      </h2>
+      <p class="text-blue-600 mt-2 font-medium">Manage your warehouse locations</p>
+    </div>
     <button
-      class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg font-semibold flex items-center"
       (click)="showAddForm = true; isEditing = false; warehouseForm = { name: '', ville: '' }"
     >
-      + Add Warehouse
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Add Warehouse
     </button>
   </div>
 
   <!-- Error Message -->
-  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+  <div *ngIf="errorMessage" class="mb-6 p-5 bg-red-50 border-2 border-red-200 rounded-xl shadow-sm">
     <div class="flex items-center">
-      <svg class="w-5 h-5 text-red-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
-      <span class="text-red-700">{{ errorMessage }}</span>
+      <span class="text-red-700 font-semibold">{{ errorMessage }}</span>
     </div>
   </div>
 
-  <!-- Add/Edit Warehouse Form -->
-  <div *ngIf="showAddForm" class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
-    <h3 class="text-lg font-semibold mb-4">
+  <!-- Add/Edit Form -->
+  <div *ngIf="showAddForm" class="mb-8 p-8 bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 rounded-2xl shadow-lg">
+    <h3 class="text-2xl font-bold mb-6 text-blue-900 flex items-center">
+      <svg *ngIf="isEditing" class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+      <svg *ngIf="!isEditing" class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
       {{ isEditing ? 'Edit Warehouse' : 'Add New Warehouse' }}
     </h3>
 
-    <form (ngSubmit)="onSubmitWarehouseForm()" class="space-y-4">
+    <form (ngSubmit)="onSubmitWarehouseForm()" class="space-y-6">
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-          Warehouse Name *
+        <label for="name" class="block text-sm font-bold text-blue-900 mb-2">
+          Warehouse Name <span class="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -37,14 +54,14 @@
           name="name"
           [(ngModel)]="warehouseForm.name"
           required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
           placeholder="Enter warehouse name"
         >
       </div>
 
       <div>
-        <label for="ville" class="block text-sm font-medium text-gray-700 mb-1">
-          Ville *
+        <label for="ville" class="block text-sm font-bold text-blue-900 mb-2">
+          City <span class="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -52,30 +69,36 @@
           name="ville"
           [(ngModel)]="warehouseForm.ville"
           required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter ville"
+          class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          placeholder="Enter city"
         >
       </div>
 
-      <div class="flex justify-end space-x-3 pt-4">
+      <div class="flex justify-end space-x-4 pt-6 border-t-2 border-blue-100">
         <button
           type="button"
           (click)="resetForm()"
-          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          class="px-6 py-3 border-2 border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-all font-semibold"
         >
           Cancel
         </button>
         <button
           type="submit"
-          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center"
+          class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg flex items-center font-semibold"
           [disabled]="!warehouseForm.name || !warehouseForm.ville || isLoading"
         >
           <span *ngIf="isLoading" class="mr-2">
-            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           </span>
+          <svg *ngIf="!isLoading && isEditing" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          <svg *ngIf="!isLoading && !isEditing" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
           {{ isEditing ? 'Update Warehouse' : 'Add Warehouse' }}
         </button>
       </div>
@@ -83,45 +106,55 @@
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="isLoading && warehouses.length === 0" class="text-center py-12">
-    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-    <p class="text-gray-600">Loading warehouses...</p>
+  <div *ngIf="isLoading && warehouses.length === 0" class="text-center py-20">
+    <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-6"></div>
+    <p class="text-blue-700 font-semibold text-lg">Loading warehouses...</p>
   </div>
 
   <!-- Warehouses Table -->
-  <div *ngIf="!isLoading" class="overflow-x-auto">
-    <table class="min-w-full bg-white border border-gray-200 rounded-lg">
-      <thead class="bg-gray-50">
+  <div *ngIf="!isLoading" class="overflow-hidden rounded-2xl shadow-xl border border-blue-100">
+    <table class="min-w-full bg-white">
+      <thead class="bg-gradient-to-r from-blue-600 to-blue-700">
       <tr>
-        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">ID</th>
-        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Name</th>
-        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Ville</th>
-        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700 border-b">Actions</th>
+        <th class="py-4 px-6 text-left text-xs font-bold text-white uppercase tracking-wider">ID</th>
+        <th class="py-4 px-6 text-left text-xs font-bold text-white uppercase tracking-wider">Name</th>
+        <th class="py-4 px-6 text-left text-xs font-bold text-white uppercase tracking-wider">City</th>
+        <th class="py-4 px-6 text-left text-xs font-bold text-white uppercase tracking-wider">Actions</th>
       </tr>
       </thead>
-      <tbody>
-      <tr *ngFor="let warehouse of warehouses" class="hover:bg-gray-50">
-        <td class="py-3 px-4 border-b text-sm text-gray-700">
-          {{ warehouse.id || 'N/A' }}
+      <tbody class="divide-y divide-blue-100">
+      <tr *ngFor="let warehouse of warehouses" class="hover:bg-blue-50 transition-colors">
+        <td class="py-4 px-6 text-sm font-medium text-blue-700">
+          <span class="px-3 py-1 bg-blue-100 rounded-lg">
+            {{ warehouse.id || 'N/A' }}
+          </span>
         </td>
-        <td class="py-3 px-4 border-b text-sm text-gray-700 font-medium">
+        <td class="py-4 px-6 text-sm font-bold text-blue-900">
           {{ warehouse.name }}
         </td>
-        <td class="py-3 px-4 border-b text-sm text-gray-700">
-          {{ warehouse.ville }}
+        <td class="py-4 px-6 text-sm font-medium text-blue-700">
+          <span class="px-3 py-1 bg-blue-50 rounded-lg">
+            {{ warehouse.ville }}
+          </span>
         </td>
-        <td class="py-3 px-4 border-b">
+        <td class="py-4 px-6">
           <div class="flex space-x-2">
             <button
-              class="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+              class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-all font-semibold shadow-sm hover:shadow-md hover:scale-105 flex items-center"
               (click)="onEditClick(warehouse)"
             >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
               Edit
             </button>
             <button
-              class="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
+              class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-all font-semibold shadow-sm hover:shadow-md hover:scale-105 flex items-center"
               (click)="onDeleteWarehouse(warehouse.id)"
             >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
               Delete
             </button>
           </div>
@@ -131,18 +164,19 @@
     </table>
 
     <!-- Empty State -->
-    <div *ngIf="warehouses.length === 0 && !showAddForm && !isLoading" class="text-center py-12">
-      <div class="text-gray-400 mb-4">
-        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-        </svg>
-      </div>
-      <h3 class="text-lg font-medium text-gray-900 mb-2">No Warehouses Found</h3>
-      <p class="text-gray-500 mb-4">Get started by adding your first warehouse.</p>
+    <div *ngIf="warehouses.length === 0 && !showAddForm && !isLoading" class="text-center py-20 bg-gradient-to-br from-blue-50 to-white">
+      <svg class="w-24 h-24 mx-auto mb-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+      </svg>
+      <h3 class="text-2xl font-bold text-blue-900 mb-3">No Warehouses Found</h3>
+      <p class="text-blue-600 mb-6 text-lg">Get started by adding your first warehouse.</p>
       <button
-        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg font-semibold inline-flex items-center"
         (click)="showAddForm = true; isEditing = false; warehouseForm = { name: '', ville: '' }"
       >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
         Add Warehouse
       </button>
     </div>
@@ -150,16 +184,16 @@
 
   <!-- Statistics Card -->
   <div *ngIf="warehouses.length > 0 && !isLoading" class="mt-8">
-    <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+    <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border-2 border-blue-200 shadow-lg">
       <div class="flex items-center">
-        <div class="p-3 bg-blue-100 rounded-lg mr-4">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="p-4 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl mr-6 shadow-md">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
           </svg>
         </div>
         <div>
-          <p class="text-sm text-blue-600">Total Warehouses</p>
-          <p class="text-2xl font-bold text-gray-900">{{ warehouses.length }}</p>
+          <p class="text-sm font-semibold text-blue-600">Total Warehouses</p>
+          <p class="text-4xl font-bold text-blue-900 mt-1">{{ warehouses.length }}</p>
         </div>
       </div>
     </div>

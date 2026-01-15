@@ -1,202 +1,209 @@
-<!-- product.html -->
-<div class="container mx-auto p-4" [class.bg-gray-900]="darkMode" [class.text-white]="darkMode">
-  
-  <!-- En-tête avec recherche et bouton d'ajout -->
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold" [class]="textPrimary">Gestion des Produits</h1>
-    
+<div class="container mx-auto p-6" [class.bg-gray-900]="darkMode" [class.text-white]="darkMode">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-blue-900" [class]="textPrimary">Product Management</h1>
+      <p class="text-sm text-blue-600 mt-1">Manage your product catalog</p>
+    </div>
+
     <div class="flex items-center space-x-4">
-      <!-- Barre de recherche -->
+      <!-- Search Bar -->
       <div class="relative">
-        <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
+        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400">
           {{ getIcon('search') }}
         </span>
         <input
           type="text"
           [value]="searchQuery"
           (input)="onSearchChange($event)"
-          placeholder="Rechercher un produit..."
-          class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Search products..."
+          class="pl-11 pr-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all w-72 bg-blue-50/50"
           [class.bg-gray-800]="darkMode"
           [class.border-gray-700]="darkMode"
           [class.text-white]="darkMode"
         />
       </div>
-      
-      <!-- Bouton Ajouter -->
+
+      <!-- Add Button -->
       <button
         (click)="openCreateForm()"
-        class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="flex items-center px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium"
       >
-        <span class="mr-2">{{ getIcon('plus') }}</span>
-        Ajouter un produit
+        <span class="mr-2 text-lg">{{ getIcon('plus') }}</span>
+        Add Product
       </button>
     </div>
   </div>
 
-  <!-- Tableau des produits -->
-  <div class="overflow-x-auto border rounded-lg" [class]="borderColor">
-    <table class="min-w-full divide-y" [class]="'divide-gray-200 ' + (darkMode ? 'divide-gray-700' : '')">
-      <thead [class]="tableHeaderBg">
+  <!-- Products Table -->
+  <div class="overflow-hidden rounded-2xl shadow-lg border border-blue-100" [class]="borderColor">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-blue-100" [class]="'bg-white ' + (darkMode ? 'divide-gray-700 bg-gray-800' : '')">
+        <thead class="bg-gradient-to-r from-blue-600 to-blue-700" [class]="tableHeaderBg">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
-            Produit
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider" [class]="textPrimary">
+            Product
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider" [class]="textPrimary">
             SKU
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
-            Prix
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider" [class]="textPrimary">
+            Price
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
-            Statut
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider" [class]="textPrimary">
+            Status
           </th>
-          <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" [class]="textPrimary">
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider" [class]="textPrimary">
             Actions
           </th>
         </tr>
-      </thead>
-      <tbody [class]="'bg-white divide-y ' + (darkMode ? 'bg-gray-800 divide-gray-700' : 'divide-gray-200')">
-        <tr 
-          *ngFor="let product of filteredProducts" 
+        </thead>
+        <tbody class="bg-white divide-y divide-blue-100" [class]="darkMode ? 'bg-gray-800 divide-gray-700' : ''">
+        <tr
+          *ngFor="let product of filteredProducts"
+          class="hover:bg-blue-50 transition-colors"
           [class]="tableRowHover"
         >
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="font-medium" [class]="textPrimary">{{ product.name }}</div>
+            <div class="font-semibold text-blue-900" [class]="textPrimary">{{ product.name }}</div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap" [class]="textSecondary">
-            {{ product.sku }}
+          <td class="px-6 py-4 whitespace-nowrap text-gray-600" [class]="textSecondary">
+              <span class="px-3 py-1 bg-blue-50 rounded-lg text-sm font-medium">
+                {{ product.sku }}
+              </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap" [class]="textSecondary">
+          <td class="px-6 py-4 whitespace-nowrap font-semibold text-blue-700" [class]="textSecondary">
             {{ formatNumber(product.price) }} €
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <span 
-              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-              [class]="getStatusClass(product.status || 'In Stock')"
-            >
-              {{ product.status || 'In Stock' }}
-            </span>
+              <span
+                class="px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full"
+                [class]="getStatusClass(product.status || 'In Stock')"
+              >
+                {{ product.status || 'In Stock' }}
+              </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
             <div class="flex space-x-2">
               <button
                 [class]="getActionBtnClass()"
-                class="p-1 rounded transition-colors"
-                title="Voir"
+                class="p-2 rounded-lg transition-all hover:scale-110"
+                title="View"
               >
                 {{ getIcon('eye') }}
               </button>
               <button
                 (click)="openEditForm(product)"
                 [class]="getActionBtnClass()"
-                class="p-1 rounded transition-colors"
-                title="Modifier"
+                class="p-2 rounded-lg transition-all hover:scale-110"
+                title="Edit"
               >
                 {{ getIcon('edit') }}
               </button>
               <button
                 (click)="deleteProduct(product)"
                 [class]="getActionBtnClass()"
-                class="p-1 rounded transition-colors"
-                title="Supprimer"
+                class="p-2 rounded-lg transition-all hover:scale-110"
+                title="Delete"
               >
                 {{ getIcon('trash') }}
               </button>
             </div>
           </td>
         </tr>
-        
-        <!-- Message si aucun produit -->
+
+        <!-- Empty State -->
         <tr *ngIf="filteredProducts.length === 0">
-          <td colspan="5" class="px-6 py-8 text-center" [class]="textSecondary">
+          <td colspan="5" class="px-6 py-16 text-center" [class]="textSecondary">
             <div class="flex flex-col items-center">
-              <span class="text-4xl mb-4">📦</span>
-              <p class="text-lg">Aucun produit trouvé</p>
-              <p class="mt-2">
-                {{ searchQuery ? 'Essayez avec d\'autres termes de recherche.' : 'Ajoutez votre premier produit !' }}
+              <span class="text-6xl mb-4">📦</span>
+              <p class="text-xl font-bold text-blue-900 mb-2">No Products Found</p>
+              <p class="text-blue-600">
+                {{ searchQuery ? 'Try adjusting your search criteria' : 'Add your first product to get started' }}
               </p>
             </div>
           </td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Information sur les résultats -->
-  <div class="mt-4 text-sm" [class]="textSecondary">
-    Affichage de {{ filteredProducts.length }} produit{{ filteredProducts.length !== 1 ? 's' : '' }}
-    <span *ngIf="searchQuery && filteredProducts.length !== products.length">
-      (sur {{ products.length }} au total)
+  <!-- Results Info -->
+  <div class="mt-6 text-sm font-medium text-blue-700" [class]="textSecondary">
+    Showing {{ filteredProducts.length }} product{{ filteredProducts.length !== 1 ? 's' : '' }}
+    <span *ngIf="searchQuery && filteredProducts.length !== products.length" class="text-blue-600">
+      (filtered from {{ products.length }} total)
     </span>
   </div>
 </div>
 
-<!-- Formulaire de création/modification de produit -->
-<div *ngIf="showCreateForm" class="fixed inset-0 bg-gray-900/30 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-  <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl" (click)="$event.stopPropagation()">
-    
-    <!-- En-tête du formulaire -->
-    <div class="p-8 border-b border-gray-100">
+<!-- Create/Edit Product Modal -->
+<div *ngIf="showCreateForm" class="fixed inset-0 bg-blue-900/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+  <div class="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl" (click)="$event.stopPropagation()">
+
+    <!-- Modal Header -->
+    <div class="p-8 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-white">
       <div class="flex justify-between items-center">
         <div>
-          <h3 class="text-2xl font-bold text-gray-800">
-            {{ isEditMode ? 'Modifier le Produit' : 'Nouveau Produit' }}
+          <h3 class="text-3xl font-bold text-blue-900">
+            {{ isEditMode ? '✏️ Edit Product' : '➕ New Product' }}
           </h3>
-          <p class="mt-2 text-gray-600">
-            {{ isEditMode ? 'Modifiez les informations du produit' : 'Remplissez les informations pour ajouter un nouveau produit' }}
+          <p class="mt-2 text-blue-600 font-medium">
+            {{ isEditMode ? 'Update product information' : 'Add a new product to your inventory' }}
           </p>
         </div>
         <button
           (click)="closeForm()"
-          class="p-3 rounded-full hover:bg-gray-100 transition-all duration-200"
-          aria-label="Fermer"
+          class="p-3 rounded-xl hover:bg-blue-100 transition-all duration-200 text-gray-400 hover:text-gray-600"
+          aria-label="Close"
         >
-          <span class="text-gray-500 text-xl hover:text-gray-700">✕</span>
+          <span class="text-2xl">✕</span>
         </button>
       </div>
     </div>
 
-    <!-- Formulaire -->
-    <form (ngSubmit)="isEditMode ? updateProduct() : createProduct()" class="p-8 space-y-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Form Content -->
+    <form (ngSubmit)="isEditMode ? updateProduct() : createProduct()" class="p-8 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Nom du produit -->
+        <!-- Product Name -->
         <div class="md:col-span-2">
-          <label for="name" class="block text-sm font-semibold text-gray-700 mb-3">
-            Nom du produit *
+          <label for="name" class="block text-sm font-bold text-blue-900 mb-2">
+            Product Name <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="name"
             [(ngModel)]="newProduct.name"
             name="name"
-            placeholder="Ex: Laptop Dell XPS 13"
+            placeholder="e.g., Laptop Dell XPS 13"
             required
-            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+            class="w-full px-5 py-4 bg-white border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800 font-medium"
           />
         </div>
 
         <!-- Description -->
         <div class="md:col-span-2">
-          <label for="description" class="block text-sm font-semibold text-gray-700 mb-3">
-            Description *
+          <label for="description" class="block text-sm font-bold text-blue-900 mb-2">
+            Description <span class="text-red-500">*</span>
           </label>
           <textarea
             id="description"
             [(ngModel)]="newProduct.description"
             name="description"
             rows="4"
-            placeholder="Ordinateur portable haut de gamme"
+            placeholder="Premium high-performance laptop"
             required
-            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+            class="w-full px-5 py-4 bg-white border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
           ></textarea>
         </div>
 
         <!-- SKU -->
         <div>
-          <label for="sku" class="block text-sm font-semibold text-gray-700 mb-3">
-            SKU *
+          <label for="sku" class="block text-sm font-bold text-blue-900 mb-2">
+            SKU <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -206,18 +213,18 @@
             placeholder="DLXPS13-2023"
             required
             [readonly]="isEditMode"
-            [class]="isEditMode ? 'bg-gray-50 cursor-not-allowed' : ''"
-            class="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+            [class]="isEditMode ? 'bg-blue-50 cursor-not-allowed' : 'bg-white'"
+            class="w-full px-5 py-4 border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800 font-medium"
           />
-          <p *ngIf="isEditMode" class="mt-2 text-sm text-gray-500">
-            Le SKU ne peut pas être modifié
+          <p *ngIf="isEditMode" class="mt-2 text-sm text-blue-600 font-medium">
+            🔒 SKU cannot be modified
           </p>
         </div>
 
-        <!-- Prix -->
+        <!-- Price -->
         <div>
-          <label for="price" class="block text-sm font-semibold text-gray-700 mb-3">
-            Prix (€) *
+          <label for="price" class="block text-sm font-bold text-blue-900 mb-2">
+            Price (€) <span class="text-red-500">*</span>
           </label>
           <input
             type="number"
@@ -228,44 +235,44 @@
             min="1"
             step="0.01"
             required
-            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+            class="w-full px-5 py-4 bg-white border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800 font-medium"
           />
         </div>
 
-        <!-- Statut -->
+        <!-- Status -->
         <div class="md:col-span-2">
-          <label for="status" class="block text-sm font-semibold text-gray-700 mb-3">
-            Statut *
+          <label for="status" class="block text-sm font-bold text-blue-900 mb-2">
+            Status <span class="text-red-500">*</span>
           </label>
           <select
             id="status"
             [(ngModel)]="newProduct.status"
             name="status"
-            class="w-full px-5 py-4 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800"
+            class="w-full px-5 py-4 bg-white border-2 border-blue-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-300 text-gray-800 font-medium"
           >
-            <option value="In Stock">En stock</option>
-            <option value="Low Stock">Stock faible</option>
-            <option value="Out of Stock">Rupture de stock</option>
+            <option value="In Stock">✓ In Stock</option>
+            <option value="Low Stock">⚠️ Low Stock</option>
+            <option value="Out of Stock">✗ Out of Stock</option>
           </select>
         </div>
 
       </div>
 
-      <!-- Boutons -->
-      <div class="flex justify-end space-x-4 pt-8 border-t border-gray-100">
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-4 pt-8 border-t border-blue-100">
         <button
           type="button"
           (click)="closeForm()"
-          class="px-8 py-3 border-2 border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+          class="px-8 py-3.5 border-2 border-blue-200 rounded-xl text-blue-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 font-semibold"
         >
-          Annuler
+          Cancel
         </button>
 
         <button
           type="submit"
-          class="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all duration-200"
+          class="px-8 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-md hover:shadow-lg font-semibold"
         >
-          {{ isEditMode ? '💾 Enregistrer' : '+ Ajouter le produit' }}
+          {{ isEditMode ? '💾 Save Changes' : '+ Add Product' }}
         </button>
       </div>
     </form>

@@ -1,45 +1,72 @@
-<div class="min-h-screen" [class]="bgClass">
-  <div class="container mx-auto p-6">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50" [class]="bgClass">
+  <div class="container mx-auto p-8">
 
     <!-- Header -->
     <div class="mb-8">
       <div class="flex justify-between items-center mb-6">
         <div>
-          <h1 class="text-3xl font-bold" [class]="textPrimary">Suppliers Management</h1>
-          <p class="mt-2" [class]="textSecondary">
+          <h1 class="text-4xl font-bold text-blue-900" [class]="textPrimary">Suppliers Management</h1>
+          <p class="mt-2 text-lg text-blue-600" [class]="textSecondary">
             Manage your suppliers and their contact information
           </p>
         </div>
         <button
           (click)="openCreateModal()"
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center shadow"
+          class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all duration-200 flex items-center shadow-md hover:shadow-lg font-semibold"
         >
-          <span class="mr-2">+</span> Add New Supplier
+          <span class="mr-2 text-lg">+</span> Add New Supplier
         </button>
       </div>
 
-      <!-- Stats Cards - CORRIGÉ AVEC MÉTHODES -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="rounded-lg p-4 shadow" [class]="cardBg">
-          <p class="text-sm" [class]="textSecondary">Total Suppliers</p>
-          <p class="text-2xl font-bold" [class]="textPrimary">{{ suppliers?.length || 0 }}</p>
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="rounded-2xl p-6 shadow-md bg-white border border-blue-100 hover:shadow-lg transition-shadow" [class]="cardBg">
+          <div class="flex items-center">
+            <div class="p-3 bg-blue-100 rounded-xl mr-4">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-blue-600" [class]="textSecondary">Total Suppliers</p>
+              <p class="text-4xl font-bold mt-2 text-blue-900" [class]="textPrimary">{{ suppliers?.length || 0 }}</p>
+            </div>
+          </div>
         </div>
-        <div class="rounded-lg p-4 shadow" [class]="cardBg">
-          <p class="text-sm" [class]="textSecondary">Active Suppliers</p>
-          <p class="text-2xl font-bold text-green-600">
-            {{ getActiveSuppliersCount() }}
-          </p>
+        <div class="rounded-2xl p-6 shadow-md bg-gradient-to-br from-green-50 to-white border border-green-100 hover:shadow-lg transition-shadow" [class]="cardBg">
+          <div class="flex items-center">
+            <div class="p-3 bg-green-100 rounded-xl mr-4">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-green-700" [class]="textSecondary">Active Suppliers</p>
+              <p class="text-4xl font-bold mt-2 text-green-700">
+                {{ getActiveSuppliersCount() }}
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="rounded-lg p-4 shadow" [class]="cardBg">
-          <p class="text-sm" [class]="textSecondary">Inactive Suppliers</p>
-          <p class="text-2xl font-bold text-red-600">
-            {{ getInactiveSuppliersCount() }}
-          </p>
+        <div class="rounded-2xl p-6 shadow-md bg-gradient-to-br from-red-50 to-white border border-red-100 hover:shadow-lg transition-shadow" [class]="cardBg">
+          <div class="flex items-center">
+            <div class="p-3 bg-red-100 rounded-xl mr-4">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-red-700" [class]="textSecondary">Inactive Suppliers</p>
+              <p class="text-4xl font-bold mt-2 text-red-700">
+                {{ getInactiveSuppliersCount() }}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Search and Filter Bar -->
-      <div class="flex flex-col md:flex-row gap-4 mb-6">
+      <div class="flex flex-col md:flex-row gap-4 mb-8">
         <div class="flex-1">
           <div class="relative">
             <input
@@ -47,35 +74,39 @@
               [(ngModel)]="searchQuery"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Search suppliers by name or contact info..."
-              class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'"
+              class="w-full pl-12 pr-4 py-3.5 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white shadow-sm"
+              [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-blue-200'"
             >
-            <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
+            <span class="absolute left-4 top-4 text-blue-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </span>
           </div>
         </div>
 
-        <div class="flex gap-2">
+        <div class="flex gap-3">
           <button
             (click)="onStatusFilterChange('all')"
             [class]="statusFilter === 'all'
-              ? 'px-4 py-2 bg-blue-600 text-white rounded-lg'
-              : 'px-4 py-2 rounded-lg hover:opacity-90 transition-opacity ' + (darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700')"
+              ? 'px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl shadow-md font-semibold'
+              : 'px-5 py-3 rounded-xl transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-white text-blue-700 hover:bg-blue-50 border-2 border-blue-200')"
           >
             All
           </button>
           <button
             (click)="onStatusFilterChange('active')"
             [class]="statusFilter === 'active'
-              ? 'px-4 py-2 bg-green-600 text-white rounded-lg'
-              : 'px-4 py-2 rounded-lg hover:opacity-90 transition-opacity ' + (darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700')"
+              ? 'px-5 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-md font-semibold'
+              : 'px-5 py-3 rounded-xl transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-white text-green-700 hover:bg-green-50 border-2 border-green-200')"
           >
             Active
           </button>
           <button
             (click)="onStatusFilterChange('inactive')"
             [class]="statusFilter === 'inactive'
-              ? 'px-4 py-2 bg-red-600 text-white rounded-lg'
-              : 'px-4 py-2 rounded-lg hover:opacity-90 transition-opacity ' + (darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-200 text-gray-700')"
+              ? 'px-5 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl shadow-md font-semibold'
+              : 'px-5 py-3 rounded-xl transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-white text-red-700 hover:bg-red-50 border-2 border-red-200')"
           >
             Inactive
           </button>
@@ -84,118 +115,135 @@
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      <p class="mt-4" [class]="textSecondary">Loading suppliers...</p>
+    <div *ngIf="isLoading" class="text-center py-20">
+      <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mb-4"></div>
+      <p class="text-lg font-semibold text-blue-700" [class]="textSecondary">Loading suppliers...</p>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage && !isLoading" class="mb-6 p-4 rounded-lg"
-         [class]="darkMode ? 'bg-red-900/30 text-red-300' : 'bg-red-100 text-red-700'">
+    <div *ngIf="errorMessage && !isLoading" class="mb-8 p-5 rounded-xl shadow-md"
+         [class]="darkMode ? 'bg-red-900/30 text-red-300' : 'bg-red-50 text-red-700 border-2 border-red-200'">
       <div class="flex justify-between items-center">
-        <span>{{ errorMessage }}</span>
-        <button (click)="loadSuppliers()" class="ml-4 underline">
+        <div class="flex items-center">
+          <span class="text-2xl mr-3">⚠️</span>
+          <span class="font-semibold">{{ errorMessage }}</span>
+        </div>
+        <button (click)="loadSuppliers()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
           Retry
         </button>
       </div>
     </div>
 
     <!-- Suppliers Table -->
-    <div *ngIf="!isLoading && !errorMessage" class="rounded-lg shadow overflow-hidden" [class]="cardBg">
+    <div *ngIf="!isLoading && !errorMessage" class="rounded-2xl shadow-xl overflow-hidden border border-blue-100" [class]="cardBg">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y" [class]="darkMode ? 'divide-gray-700' : 'divide-gray-200'">
-          <thead [class]="darkMode ? 'bg-gray-900' : 'bg-gray-50'">
+        <table class="min-w-full divide-y divide-blue-100" [class]="darkMode ? 'divide-gray-700' : ''">
+          <thead class="bg-gradient-to-r from-blue-600 to-blue-700" [class]="darkMode ? 'bg-gray-900' : ''">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                [class]="darkMode ? 'text-gray-300' : 'text-gray-500'">
+            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
               Name
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                [class]="darkMode ? 'text-gray-300' : 'text-gray-500'">
+            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
               Contact Info
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                [class]="darkMode ? 'text-gray-300' : 'text-gray-500'">
+            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
               Status
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                [class]="darkMode ? 'text-gray-300' : 'text-gray-500'">
+            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
               Created
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
-                [class]="darkMode ? 'text-gray-300' : 'text-gray-500'">
+            <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
               Actions
             </th>
           </tr>
           </thead>
-          <tbody class="divide-y" [class]="darkMode ? 'divide-gray-700' : 'divide-gray-200'">
+          <tbody class="bg-white divide-y divide-blue-100" [class]="darkMode ? 'divide-gray-700 bg-gray-800' : ''">
           <tr *ngFor="let supplier of paginatedSuppliers; trackBy: trackById"
-              [class]="darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="font-medium" [class]="textPrimary">{{ supplier.name }}</div>
-              <div class="text-xs mt-1" [class]="textSecondary" *ngIf="supplier.id">
-                ID: {{ supplier.id?.slice(0, 8) }}...
+              class="hover:bg-blue-50 transition-colors"
+              [class]="darkMode ? 'hover:bg-gray-700' : ''">
+            <td class="px-6 py-5 whitespace-nowrap">
+              <div class="font-bold text-blue-900" [class]="textPrimary">{{ supplier.name }}</div>
+              <div class="text-xs mt-1.5 text-blue-600" [class]="textSecondary" *ngIf="supplier.id">
+                <span class="px-2 py-1 bg-blue-100 rounded-lg font-medium">
+                  ID: {{ supplier.id?.slice(0, 8) }}...
+                </span>
               </div>
             </td>
-            <td class="px-6 py-4">
-              <div class="text-sm" [class]="textPrimary">{{ supplier.contactInfo }}</div>
-              <div class="flex gap-2 mt-1">
+            <td class="px-6 py-5">
+              <div class="text-sm font-medium text-blue-900" [class]="textPrimary">{{ supplier.contactInfo }}</div>
+              <div class="flex gap-2 mt-2">
                 <button
                   *ngIf="extractEmail(supplier.contactInfo)"
                   (click)="copyContactInfo(extractEmail(supplier.contactInfo))"
-                  class="text-xs px-2 py-1 rounded"
-                  [class]="darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'"
+                  class="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all hover:scale-105 flex items-center"
+                  [class]="darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-blue-100 hover:bg-blue-200 text-blue-700'"
                   title="Copy email"
                 >
-                  📧 Copy Email
+                  <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                  Copy Email
                 </button>
                 <button
                   *ngIf="extractPhone(supplier.contactInfo)"
                   (click)="copyContactInfo(extractPhone(supplier.contactInfo))"
-                  class="text-xs px-2 py-1 rounded"
-                  [class]="darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'"
+                  class="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all hover:scale-105 flex items-center"
+                  [class]="darkMode ? 'bg-gray-700 hover:bg-gray-600 text-gray-300' : 'bg-blue-100 hover:bg-blue-200 text-blue-700'"
                   title="Copy phone"
                 >
-                  📞 Copy Phone
+                  <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                  </svg>
+                  Copy Phone
                 </button>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 py-1 text-xs font-semibold rounded-full"
+            <td class="px-6 py-5 whitespace-nowrap">
+                <span class="px-4 py-2 text-xs font-bold rounded-full shadow-sm"
                       [class]="getStatusClass(supplier.active)">
                   {{ getStatusText(supplier.active) }}
                 </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm" [class]="textSecondary">
+            <td class="px-6 py-5 whitespace-nowrap text-sm font-medium" [class]="textSecondary">
               {{ formatDate(supplier.createdAt) }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">
               <div class="flex space-x-2">
                 <button
                   (click)="openEditModal(supplier)"
-                  class="p-2 rounded hover:bg-opacity-20 hover:bg-blue-500"
-                  [class]="darkMode ? 'text-blue-400' : 'text-blue-600'"
+                  class="p-2.5 rounded-lg transition-all hover:scale-110 shadow-sm"
+                  [class]="darkMode ? 'text-blue-400 hover:bg-blue-500 hover:bg-opacity-20' : 'text-blue-600 hover:bg-blue-100'"
                   title="Edit"
                 >
-                  ✏️
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
                 </button>
                 <button
                   (click)="toggleStatus(supplier)"
                   [class]="supplier.active
                       ? (darkMode ? 'text-orange-400 hover:bg-orange-500 hover:bg-opacity-20' : 'text-orange-600 hover:bg-orange-100')
                       : (darkMode ? 'text-green-400 hover:bg-green-500 hover:bg-opacity-20' : 'text-green-600 hover:bg-green-100')"
-                  class="p-2 rounded"
+                  class="p-2.5 rounded-lg transition-all hover:scale-110 shadow-sm"
                   [title]="supplier.active ? 'Deactivate' : 'Activate'"
                 >
-                  {{ supplier.active ? '⏸️' : '▶️' }}
+                  <svg *ngIf="supplier.active" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <svg *ngIf="!supplier.active" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
                 </button>
                 <button
                   (click)="confirmDelete(supplier)"
-                  class="p-2 rounded hover:bg-opacity-20 hover:bg-red-500"
-                  [class]="darkMode ? 'text-red-400' : 'text-red-600'"
+                  class="p-2.5 rounded-lg transition-all hover:scale-110 shadow-sm"
+                  [class]="darkMode ? 'text-red-400 hover:bg-red-500 hover:bg-opacity-20' : 'text-red-600 hover:bg-red-100'"
                   title="Delete"
                 >
-                  🗑️
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
                 </button>
               </div>
             </td>
@@ -203,18 +251,22 @@
 
           <!-- Empty State -->
           <tr *ngIf="filteredSuppliers.length === 0">
-            <td colspan="5" class="px-6 py-12 text-center" [class]="textSecondary">
-              <div class="mb-4 text-4xl">📦</div>
-              <p class="text-lg mb-2" [class]="textPrimary">No suppliers found</p>
-              <p *ngIf="searchQuery || statusFilter !== 'all'">
+            <td colspan="5" class="px-6 py-16 text-center" [class]="textSecondary">
+              <svg class="w-24 h-24 mx-auto mb-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+              </svg>
+              <p class="text-xl font-bold mb-2 text-blue-900" [class]="textPrimary">No suppliers found</p>
+              <p *ngIf="searchQuery || statusFilter !== 'all'" class="text-blue-600">
                 Try adjusting your search or filter criteria
               </p>
               <button
                 *ngIf="searchQuery || statusFilter !== 'all'"
                 (click)="searchQuery = ''; statusFilter = 'all'; applyFilters()"
-                class="mt-2 px-4 py-2 rounded-lg transition-colors"
-                [class]="darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'"
+                class="mt-4 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all font-semibold shadow-md inline-flex items-center"
               >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
                 Clear filters
               </button>
             </td>
@@ -224,9 +276,9 @@
       </div>
 
       <!-- Pagination -->
-      <div *ngIf="totalPages > 1" class="px-6 py-4 border-t" [class]="borderColor">
+      <div *ngIf="totalPages > 1" class="px-6 py-5 border-t bg-blue-50/50" [class]="borderColor">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div class="text-sm" [class]="textSecondary">
+          <div class="text-sm font-semibold text-blue-700" [class]="textSecondary">
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ getEndIndex() }} of
             {{ filteredSuppliers.length }} suppliers
@@ -236,19 +288,19 @@
               (click)="setPage(currentPage - 1)"
               [disabled]="currentPage === 1"
               [class]="currentPage === 1
-                ? 'px-3 py-1 rounded border cursor-not-allowed opacity-50 ' + (darkMode ? 'bg-gray-800 border-gray-700 text-gray-500' : 'bg-gray-100 border-gray-300 text-gray-400')
-                : 'px-3 py-1 rounded border transition-colors ' + (darkMode ? 'hover:bg-gray-700 border-gray-600' : 'hover:bg-gray-100 border-gray-300')"
+                ? 'px-4 py-2 rounded-xl border-2 cursor-not-allowed opacity-50 font-semibold ' + (darkMode ? 'bg-gray-800 border-gray-700 text-gray-500' : 'bg-gray-100 border-gray-300 text-gray-400')
+                : 'px-4 py-2 rounded-xl border-2 transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'hover:bg-gray-700 border-gray-600 text-white' : 'hover:bg-blue-50 border-blue-200 text-blue-700')"
             >
               ← Previous
             </button>
 
-            <div class="flex space-x-1">
+            <div class="flex space-x-1.5">
               <button
                 *ngFor="let page of getPageNumbers()"
                 (click)="setPage(page)"
                 [class]="currentPage === page
-                  ? 'px-3 py-1 rounded bg-blue-600 text-white'
-                  : 'px-3 py-1 rounded border transition-colors ' + (darkMode ? 'hover:bg-gray-700 border-gray-600' : 'hover:bg-gray-100 border-gray-300')"
+                  ? 'px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold shadow-md'
+                  : 'px-4 py-2 rounded-xl border-2 transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'hover:bg-gray-700 border-gray-600 text-white' : 'hover:bg-blue-50 border-blue-200 text-blue-700')"
               >
                 {{ page }}
               </button>
@@ -258,8 +310,8 @@
               (click)="setPage(currentPage + 1)"
               [disabled]="currentPage === totalPages"
               [class]="currentPage === totalPages
-                ? 'px-3 py-1 rounded border cursor-not-allowed opacity-50 ' + (darkMode ? 'bg-gray-800 border-gray-700 text-gray-500' : 'bg-gray-100 border-gray-300 text-gray-400')
-                : 'px-3 py-1 rounded border transition-colors ' + (darkMode ? 'hover:bg-gray-700 border-gray-600' : 'hover:bg-gray-100 border-gray-300')"
+                ? 'px-4 py-2 rounded-xl border-2 cursor-not-allowed opacity-50 font-semibold ' + (darkMode ? 'bg-gray-800 border-gray-700 text-gray-500' : 'bg-gray-100 border-gray-300 text-gray-400')
+                : 'px-4 py-2 rounded-xl border-2 transition-all font-semibold shadow-sm hover:shadow-md ' + (darkMode ? 'hover:bg-gray-700 border-gray-600 text-white' : 'hover:bg-blue-50 border-blue-200 text-blue-700')"
             >
               Next →
             </button>
@@ -270,81 +322,93 @@
   </div>
 
   <!-- Create/Edit Modal -->
-  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div class="rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto" [class]="cardBg">
-      <div class="p-6">
+  <div *ngIf="showModal" class="fixed inset-0 bg-blue-900/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto bg-white" [class]="cardBg">
+      <div class="p-8">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold" [class]="textPrimary">
+          <h2 class="text-2xl font-bold text-blue-900 flex items-center" [class]="textPrimary">
+            <svg class="w-7 h-7 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path *ngIf="isEditMode" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              <path *ngIf="!isEditMode" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
             {{ isEditMode ? 'Edit Supplier' : 'Add New Supplier' }}
           </h2>
           <button
             (click)="closeModal()"
-            class="text-gray-400 hover:text-gray-600 transition-colors"
-            [class]="darkMode ? 'hover:text-gray-300' : ''"
+            class="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-lg hover:bg-blue-100"
+            [class]="darkMode ? 'hover:text-gray-300 hover:bg-gray-700' : ''"
           >
-            ✕
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
           </button>
         </div>
 
         <form (ngSubmit)="onSubmit()" #supplierForm="ngForm">
-          <div class="space-y-4">
+          <div class="space-y-5">
             <!-- Name -->
             <div>
-              <label class="block text-sm font-medium mb-2" [class]="textPrimary">Name *</label>
+              <label class="block text-sm font-bold text-blue-900 mb-2" [class]="textPrimary">
+                Name <span class="text-red-500">*</span>
+              </label>
               <input
                 type="text"
                 [(ngModel)]="formData.name"
                 name="name"
                 required
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'"
+                class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all font-medium"
+                [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'"
                 placeholder="Supplier name"
               >
             </div>
 
             <!-- Contact Info -->
             <div>
-              <label class="block text-sm font-medium mb-2" [class]="textPrimary">Contact Information *</label>
+              <label class="block text-sm font-bold text-blue-900 mb-2" [class]="textPrimary">
+                Contact Information <span class="text-red-500">*</span>
+              </label>
               <textarea
                 [(ngModel)]="formData.contactInfo"
                 name="contactInfo"
                 required
                 rows="3"
-                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'"
+                class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                [class]="darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white'"
                 placeholder="Email, phone number, address, etc."
               ></textarea>
-              <p class="text-xs mt-1" [class]="textSecondary">
+              <p class="text-xs mt-2 text-blue-600 font-medium" [class]="textSecondary">
                 Example: contact@example.com - 01 23 45 67 89
               </p>
             </div>
 
             <!-- Active Status -->
-            <div class="flex items-center p-3 rounded" [class]="darkMode ? 'bg-gray-700' : 'bg-gray-50'">
-              <input
-                type="checkbox"
-                id="active"
-                [(ngModel)]="formData.active"
-                name="active"
-                class="h-4 w-4 rounded"
-                [class]="darkMode ? 'bg-gray-600 border-gray-500' : 'border-gray-300'"
-              >
-              <label for="active" class="ml-2 text-sm font-medium" [class]="textPrimary">
-                Active Supplier
-              </label>
+            <div class="p-4 rounded-xl" [class]="darkMode ? 'bg-gray-700' : 'bg-blue-50 border-2 border-blue-100'">
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="active"
+                  [(ngModel)]="formData.active"
+                  name="active"
+                  class="h-5 w-5 rounded"
+                  [class]="darkMode ? 'bg-gray-600 border-gray-500' : 'border-blue-300'"
+                >
+                <label for="active" class="ml-3 text-sm font-bold text-blue-900" [class]="textPrimary">
+                  Active Supplier
+                </label>
+              </div>
+              <p class="text-xs mt-2 ml-8 text-blue-600" [class]="textSecondary">
+                Inactive suppliers won't appear in dropdowns for new purchases
+              </p>
             </div>
-            <p class="text-xs" [class]="textSecondary">
-              Inactive suppliers won't appear in dropdowns for new purchases
-            </p>
           </div>
 
           <!-- Form Actions -->
-          <div class="flex justify-end space-x-3 mt-8 pt-6 border-t" [class]="borderColor">
+          <div class="flex justify-end space-x-3 mt-8 pt-6 border-t-2 border-blue-100" [class]="borderColor">
             <button
               type="button"
               (click)="closeModal()"
-              class="px-4 py-2 border rounded-lg transition-colors"
-              [class]="darkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'"
+              class="px-6 py-3 border-2 border-blue-200 rounded-xl transition-all font-semibold hover:bg-blue-50"
+              [class]="darkMode ? 'border-gray-600 hover:bg-gray-700 text-white' : 'text-blue-700'"
             >
               Cancel
             </button>
@@ -352,9 +416,13 @@
               type="submit"
               [disabled]="!isFormValid()"
               [class]="!isFormValid()
-                ? 'px-4 py-2 bg-blue-400 text-white rounded-lg cursor-not-allowed'
-                : 'px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors'"
+                ? 'px-6 py-3 bg-blue-400 text-white rounded-xl cursor-not-allowed font-semibold'
+                : 'px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all shadow-md hover:shadow-lg font-semibold flex items-center'"
             >
+              <svg *ngIf="isFormValid()" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path *ngIf="isEditMode" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <path *ngIf="!isEditMode" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
               {{ isEditMode ? 'Update' : 'Create' }} Supplier
             </button>
           </div>
@@ -364,23 +432,28 @@
   </div>
 
   <!-- Delete Confirmation Dialog -->
-  <div *ngIf="showConfirmDialog" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div class="rounded-lg shadow-xl max-w-md w-full" [class]="cardBg">
-      <div class="p-6">
-        <div class="mb-4">
-          <div class="flex items-center mb-3">
-            <div class="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 mr-3">
-              <span class="text-red-600 dark:text-red-400 text-xl">⚠️</span>
+  <div *ngIf="showConfirmDialog" class="fixed inset-0 bg-red-900/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="rounded-2xl shadow-2xl max-w-md w-full bg-white" [class]="cardBg">
+      <div class="p-8">
+        <div class="mb-6">
+          <div class="flex items-center mb-4">
+            <div class="p-4 rounded-xl bg-red-100 dark:bg-red-900/30 mr-4">
+              <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
             </div>
-            <h3 class="text-lg font-bold" [class]="darkMode ? 'text-red-400' : 'text-red-600'">
+            <h3 class="text-2xl font-bold" [class]="darkMode ? 'text-red-400' : 'text-red-600'">
               Confirm Delete
             </h3>
           </div>
-          <p [class]="textPrimary">
+          <p class="text-lg" [class]="textPrimary">
             Are you sure you want to delete supplier
-            <strong>"{{ supplierToDelete?.name }}"</strong>?
+            <strong class="text-blue-700">"{{ supplierToDelete?.name }}"</strong>?
           </p>
-          <p class="text-sm mt-2" [class]="textSecondary">
+          <p class="text-sm mt-3 font-medium text-red-600 flex items-center" [class]="textSecondary">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
             This action cannot be undone. All associated data will be permanently removed.
           </p>
         </div>
@@ -388,15 +461,18 @@
         <div class="flex justify-end space-x-3">
           <button
             (click)="closeConfirmDialog()"
-            class="px-4 py-2 border rounded-lg transition-colors"
-            [class]="darkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'"
+            class="px-6 py-3 border-2 border-gray-300 rounded-xl transition-all font-semibold hover:bg-gray-50"
+            [class]="darkMode ? 'border-gray-600 hover:bg-gray-700 text-white' : 'text-gray-700'"
           >
             Cancel
           </button>
           <button
             (click)="deleteSupplier()"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            class="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl transition-all shadow-md hover:shadow-lg font-semibold flex items-center"
           >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
             Delete Supplier
           </button>
         </div>

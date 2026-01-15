@@ -1,111 +1,147 @@
-<div class="min-h-screen flex" [class]="bgClass">
+<div class="min-h-screen flex bg-gradient-to-br from-blue-50 via-white to-blue-50" [class]="bgClass">
 
   <!-- Sidebar -->
-  <div class="w-64 border-r" [class]="borderColor + ' ' + cardBg">
-    <div class="p-4">
-      <h2 class="text-xl font-bold mb-6" [class]="textPrimary">
-        <span class="mr-2">📊</span> InventoryPro
+  <div class="w-64 border-r border-blue-100 bg-white shadow-sm" [class]="borderColor + ' ' + cardBg">
+    <div class="p-6">
+      <h2 class="text-2xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent flex items-center" [class]="textPrimary">
+        <svg class="w-7 h-7 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        InventoryPro
       </h2>
       <nav>
-        <ul class="space-y-2">
-          <!-- Menu items restent inchangés -->
+        <ul class="space-y-1.5">
+          <!-- Dashboard -->
           <li>
             <button
               (click)="setCurrentView('dashboard')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'dashboard' && !darkMode"
-              [class.text-blue-600]="currentView === 'dashboard' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'dashboard' && !darkMode"
+              [class.from-blue-50]="currentView === 'dashboard' && !darkMode"
+              [class.to-blue-100]="currentView === 'dashboard' && !darkMode"
+              [class.text-blue-700]="currentView === 'dashboard' && !darkMode"
+              [class.shadow-sm]="currentView === 'dashboard' && !darkMode"
               [class.bg-blue-900]="currentView === 'dashboard' && darkMode"
               [class.text-blue-300]="currentView === 'dashboard' && darkMode"
-              [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'dashboard' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'dashboard' && darkMode"
             >
-              <span class="mr-3">📊</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
               Dashboard
             </button>
           </li>
 
+          <!-- Users -->
           <li>
             <button
               (click)="setCurrentView('users')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'users' && !darkMode"
-              [class.text-blue-600]="currentView === 'users' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'users' && !darkMode"
+              [class.from-blue-50]="currentView === 'users' && !darkMode"
+              [class.to-blue-100]="currentView === 'users' && !darkMode"
+              [class.text-blue-700]="currentView === 'users' && !darkMode"
+              [class.shadow-sm]="currentView === 'users' && !darkMode"
               [class.bg-blue-900]="currentView === 'users' && darkMode"
               [class.text-blue-300]="currentView === 'users' && darkMode"
-              [class]="currentView !== 'users' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'users' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'users' && darkMode"
             >
-              <span class="mr-3">👥</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
               Users
             </button>
           </li>
 
+          <!-- Products -->
           <li>
             <button
               (click)="setCurrentView('products')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'products' && !darkMode"
-              [class.text-blue-600]="currentView === 'products' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'products' && !darkMode"
+              [class.from-blue-50]="currentView === 'products' && !darkMode"
+              [class.to-blue-100]="currentView === 'products' && !darkMode"
+              [class.text-blue-700]="currentView === 'products' && !darkMode"
+              [class.shadow-sm]="currentView === 'products' && !darkMode"
               [class.bg-blue-900]="currentView === 'products' && darkMode"
               [class.text-blue-300]="currentView === 'products' && darkMode"
-              [class]="currentView !== 'products' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'products' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'products' && darkMode"
             >
-              <span class="mr-3">📦</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
               Products
             </button>
           </li>
 
+          <!-- Suppliers -->
           <li>
             <button
               (click)="setCurrentView('suppliers')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'suppliers' && !darkMode"
-              [class.text-blue-600]="currentView === 'suppliers' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'suppliers' && !darkMode"
+              [class.from-blue-50]="currentView === 'suppliers' && !darkMode"
+              [class.to-blue-100]="currentView === 'suppliers' && !darkMode"
+              [class.text-blue-700]="currentView === 'suppliers' && !darkMode"
+              [class.shadow-sm]="currentView === 'suppliers' && !darkMode"
               [class.bg-blue-900]="currentView === 'suppliers' && darkMode"
               [class.text-blue-300]="currentView === 'suppliers' && darkMode"
-              [class]="currentView !== 'suppliers' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'suppliers' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'suppliers' && darkMode"
             >
-              <span class="mr-3">🚚</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+              </svg>
               Suppliers
             </button>
           </li>
 
+          <!-- Inventories -->
           <li>
             <button
               (click)="setCurrentView('inventories')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'inventories' && !darkMode"
-              [class.text-blue-600]="currentView === 'inventories' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'inventories' && !darkMode"
+              [class.from-blue-50]="currentView === 'inventories' && !darkMode"
+              [class.to-blue-100]="currentView === 'inventories' && !darkMode"
+              [class.text-blue-700]="currentView === 'inventories' && !darkMode"
+              [class.shadow-sm]="currentView === 'inventories' && !darkMode"
               [class.bg-blue-900]="currentView === 'inventories' && darkMode"
               [class.text-blue-300]="currentView === 'inventories' && darkMode"
-              [class]="currentView !== 'inventories' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'inventories' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'inventories' && darkMode"
             >
-              <span class="mr-3">📦</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+              </svg>
               Inventories
             </button>
           </li>
 
+          <!-- Warehouses -->
           <li>
             <button
               (click)="setCurrentView('warehouses')"
-              class="w-full flex items-center px-4 py-3 rounded-lg transition-colors"
-              [class.bg-blue-100]="currentView === 'warehouses' && !darkMode"
-              [class.text-blue-600]="currentView === 'warehouses' && !darkMode"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm"
+              [class.bg-gradient-to-r]="currentView === 'warehouses' && !darkMode"
+              [class.from-blue-50]="currentView === 'warehouses' && !darkMode"
+              [class.to-blue-100]="currentView === 'warehouses' && !darkMode"
+              [class.text-blue-700]="currentView === 'warehouses' && !darkMode"
+              [class.shadow-sm]="currentView === 'warehouses' && !darkMode"
               [class.bg-blue-900]="currentView === 'warehouses' && darkMode"
               [class.text-blue-300]="currentView === 'warehouses' && darkMode"
-              [class]="currentView !== 'warehouses' ? textSecondary + ' hover:bg-gray-100' : ''"
+              [class]="currentView !== 'warehouses' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700' : ''"
               [class.hover:bg-gray-700]="currentView !== 'warehouses' && darkMode"
             >
-              <span class="mr-3">🏭</span>
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
               Warehouses
             </button>
           </li>
-
-          <!-- Reste des boutons menu... -->
         </ul>
       </nav>
     </div>
@@ -114,170 +150,206 @@
   <!-- Main content -->
   <div class="flex-1 overflow-auto">
     <!-- Header -->
-    <header class="sticky top-0 z-10 border-b" [class]="borderColor + ' ' + cardBg">
-      <div class="px-6 py-4 flex justify-between items-center">
+    <header class="sticky top-0 z-10 border-b border-blue-100 bg-white/80 backdrop-blur-md shadow-sm" [class]="borderColor + ' ' + cardBg">
+      <div class="px-8 py-5 flex justify-between items-center">
         <div class="flex items-center">
           <button
             (click)="toggleSidebar()"
-            class="mr-4 p-2 rounded-lg hover:bg-gray-100"
+            class="mr-4 p-2.5 rounded-xl hover:bg-blue-50 transition-colors"
             [class.hover:bg-gray-700]="darkMode"
           >
-            {{ getIcon(sidebarOpen ? 'close' : 'menu') }}
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
           </button>
-          <h1 class="text-2xl font-bold" [class]="textPrimary">
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent" [class]="textPrimary">
             {{ getCurrentViewLabel() }}
           </h1>
         </div>
 
-        <div class="flex items-center space-x-4">
-          <!-- Barre de recherche -->
+        <div class="flex items-center space-x-3">
+          <!-- Search Bar -->
           <div *ngIf="['products', 'users', 'warehouses', 'inventories', 'suppliers'].includes(currentView)" class="relative">
-            <span class="absolute left-3 top-1/2 transform -translate-y-1/2">
-              {{ getIcon('search') }}
+            <span class="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-blue-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
             </span>
             <input
               type="text"
               [value]="searchQuery"
               (input)="onSearchChange($any($event).target.value)"
-              placeholder="Rechercher..."
-              class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search..."
+              class="pl-10 pr-4 py-2.5 border border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-blue-50/50"
               [class.bg-gray-800]="darkMode"
               [class.border-gray-700]="darkMode"
               [class.text-white]="darkMode"
             />
           </div>
 
-          <!-- Bouton rafraîchir -->
+          <!-- Refresh Button -->
           <button
             (click)="refreshData()"
-            class="p-2 rounded-lg hover:bg-gray-100"
+            class="p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105"
             [class.hover:bg-gray-700]="darkMode"
             [class]="textSecondary"
             title="Refresh data"
           >
-            🔄
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
           </button>
 
-          <!-- Bouton mode sombre -->
+          <!-- Dark Mode Toggle -->
           <button
             (click)="toggleDarkMode()"
-            class="p-2 rounded-lg hover:bg-gray-100"
+            class="p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105"
             [class.hover:bg-gray-700]="darkMode"
             [class]="textSecondary"
           >
-            {{ getIcon(darkMode ? 'sun' : 'moon') }}
+            <svg *ngIf="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <svg *ngIf="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
           </button>
 
-          <!-- Notification -->
-          <button class="p-2 rounded-lg hover:bg-gray-100"
+          <!-- Notifications -->
+          <button class="p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105 relative"
                   [class.hover:bg-gray-700]="darkMode"
                   [class]="textSecondary">
-            {{ getIcon('bell') }}
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full"></span>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- Contenu principal -->
-    <main class="p-6">
+    <!-- Main Content Area -->
+    <main class="p-8">
 
-      <!-- Vue Dashboard -->
+      <!-- Dashboard View -->
       <div *ngIf="currentView === 'dashboard'">
-        <!-- Statistiques -->
+        <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div *ngFor="let stat of getStats()"
-               class="rounded-xl border p-6"
+               class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
                [class]="cardBg + ' ' + borderColor">
             <div class="flex justify-between items-start mb-4">
               <div>
-                <p class="text-sm" [class]="textSecondary">{{ stat.title }}</p>
-                <p class="text-2xl font-bold mt-2" [class]="textPrimary">
+                <p class="text-sm font-medium" [class]="textSecondary">{{ stat.title }}</p>
+                <p class="text-3xl font-bold mt-2 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent" [class]="textPrimary">
                   {{ formatNumber(stat.value) }}
                   <span *ngIf="['Total Stock Value', 'Total Sales', 'Total Purchases', 'Net Profit'].includes(stat.title)">€</span>
                 </p>
               </div>
-              <div class="p-3 rounded-lg" [class]="getTrendColorClass(stat.trend)">
+              <div class="p-3.5 rounded-xl" [class]="getTrendColorClass(stat.trend)">
                 <span [class]="getTrendIconColorClass(stat.trend)">
-                  {{ getIcon(stat.icon) }}
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
                 </span>
               </div>
             </div>
             <div *ngIf="stat.change !== undefined" class="flex items-center text-sm">
               <span [class]="getChangeClass(stat.change)">
-                {{ getChangeIcon(stat.change) }} {{ Math.abs(stat.change) }}%
+                <svg *ngIf="stat.change >= 0" class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+                </svg>
+                <svg *ngIf="stat.change < 0" class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+                {{ Math.abs(stat.change) }}%
               </span>
-              <span class="ml-2" [class]="textSecondary">vs last month</span>
+              <span class="ml-2 text-xs" [class]="textSecondary">vs last month</span>
             </div>
           </div>
         </div>
 
-        <!-- Graphiques et aperçus rapides -->
+        <!-- Charts and Quick Views -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Graphique des catégories -->
-          <div class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
-            <h3 class="text-lg font-semibold mb-6" [class]="textPrimary">Stock by Category</h3>
+          <!-- Stock by Category -->
+          <div class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
+            <h3 class="text-lg font-bold mb-6 text-blue-900" [class]="textPrimary">Stock by Category</h3>
             <div class="space-y-4">
               <div *ngFor="let category of categoryData" class="flex items-center">
-                <div class="w-24" [class]="textSecondary">{{ category.name }}</div>
-                <div class="flex-1 h-4 rounded-full bg-gray-200 overflow-hidden">
+                <div class="w-28 text-sm font-medium" [class]="textSecondary">{{ category.name }}</div>
+                <div class="flex-1 h-3 rounded-full bg-blue-50 overflow-hidden">
                   <div [style.width.%]="category.value"
                        [style.background-color]="category.color"
-                       class="h-full"></div>
+                       class="h-full rounded-full transition-all duration-500"></div>
                 </div>
-                <div class="w-12 text-right" [class]="textPrimary">{{ category.value }}%</div>
+                <div class="w-12 text-right font-semibold text-sm text-blue-700" [class]="textPrimary">{{ category.value }}%</div>
               </div>
             </div>
           </div>
 
-          <!-- Aperçu rapide des suppliers -->
-          <div class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+          <!-- Recent Suppliers -->
+          <div class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
             <div class="flex justify-between items-center mb-6">
-              <h3 class="text-lg font-semibold" [class]="textPrimary">Recent Suppliers</h3>
+              <h3 class="text-lg font-bold text-blue-900" [class]="textPrimary">Recent Suppliers</h3>
               <button
                 (click)="setCurrentView('suppliers')"
-                class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium transition-colors flex items-center"
               >
-                View All →
+                View All
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
               </button>
             </div>
-            <div class="space-y-4">
-              <div *ngFor="let supplier of suppliers.slice(0, 5)" class="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
+            <div class="space-y-3">
+              <div *ngFor="let supplier of suppliers.slice(0, 5)" class="flex items-center justify-between p-4 rounded-xl bg-blue-50/50 dark:bg-gray-700 hover:bg-blue-100/50 transition-colors">
                 <div>
-                  <p class="font-medium" [class]="textPrimary">{{ supplier.name }}</p>
-                  <p class="text-sm" [class]="textSecondary">{{ supplier.contactInfo }}</p>
+                  <p class="font-semibold text-sm" [class]="textPrimary">{{ supplier.name }}</p>
+                  <p class="text-xs mt-1" [class]="textSecondary">{{ supplier.contactInfo }}</p>
                 </div>
                 <span
-                  class="px-2 py-1 text-xs rounded-full"
+                  class="px-3 py-1.5 text-xs font-semibold rounded-full flex items-center"
                   [class]="supplier.active
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'"
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                    : 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'"
                 >
+                  <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 8 8">
+                    <circle cx="4" cy="4" r="3"/>
+                  </svg>
                   {{ supplier.active ? 'Active' : 'Inactive' }}
                 </span>
               </div>
-              <div *ngIf="suppliers.length === 0" class="text-center py-4" [class]="textSecondary">
+              <div *ngIf="suppliers.length === 0" class="text-center py-8" [class]="textSecondary">
+                <svg class="w-16 h-16 mx-auto mb-2 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                </svg>
                 No suppliers found
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Aperçu des produits -->
-        <div class="mt-6 rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+        <!-- Low Stock Products -->
+        <div class="mt-6 rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
           <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold" [class]="textPrimary">Low Stock Products</h3>
+            <h3 class="text-lg font-bold text-blue-900" [class]="textPrimary">Low Stock Products</h3>
             <button
               (click)="setCurrentView('products')"
-              class="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium transition-colors flex items-center"
             >
-              View All →
+              View All
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
             </button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div *ngFor="let product of products.slice(0, 6)" class="p-4 border rounded-lg">
-              <p class="font-medium" [class]="textPrimary">{{ product.name }}</p>
-              <!-- CORRIGÉ : Utiliser la propriété correcte -->
-              <p class="text-sm mt-2" [class]="textSecondary">
+            <div *ngFor="let product of products.slice(0, 6)" class="p-5 border border-blue-100 rounded-xl hover:shadow-md transition-shadow bg-blue-50/30">
+              <p class="font-semibold text-sm" [class]="textPrimary">{{ product.name }}</p>
+              <p class="text-sm mt-2.5 text-blue-600 flex items-center" [class]="textSecondary">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
                 Stock: {{ product.quantity || product.stock || 0 }}
               </p>
             </div>
@@ -285,17 +357,16 @@
         </div>
       </div>
 
-      <!-- Vue Products -->
+      <!-- Products View -->
       <div *ngIf="currentView === 'products'">
-        <!-- CORRIGÉ : Utiliser productEdited au lieu de productChanged -->
         <app-product
           [products]="products"
           (productEdited)="onProductEvent($event)">
         </app-product>
       </div>
 
-      <!-- Vue Inventories -->
-      <div *ngIf="currentView === 'inventories'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+      <!-- Inventories View -->
+      <div *ngIf="currentView === 'inventories'" class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
         <app-inventory
           [inventories]="inventoryView"
           [products]="products"
@@ -304,36 +375,36 @@
         </app-inventory>
       </div>
 
-      <!-- Vue Users -->
-      <div *ngIf="currentView === 'users'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+      <!-- Users View -->
+      <div *ngIf="currentView === 'users'" class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
         <app-user
           [users]="users"
           (usersChanged)="onUsersChanged($event)">
         </app-user>
       </div>
 
-      <!-- Vue Warehouses -->
-      <div *ngIf="currentView === 'warehouses'" class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
+      <!-- Warehouses View -->
+      <div *ngIf="currentView === 'warehouses'" class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
         <app-warehouses
           [warehouses]="warehouses"
           (warehousesChanged)="onWarehousesChanged($event)">
         </app-warehouses>
       </div>
 
-      <!-- Vue Suppliers -->
+      <!-- Suppliers View -->
       <div *ngIf="currentView === 'suppliers'">
         <div class="mb-6 flex justify-between items-center">
-          <h2 class="text-2xl font-bold" [class]="textPrimary">Suppliers Management</h2>
-          <div class="text-sm" [class]="textSecondary">
+          <h2 class="text-2xl font-bold text-blue-900" [class]="textPrimary">Suppliers Management</h2>
+          <div class="text-sm font-medium" [class]="textSecondary">
             Showing {{ suppliers.length }} suppliers
             <span *ngIf="searchQuery"> matching "{{ searchQuery }}"</span>
           </div>
         </div>
 
         <!-- Loading State -->
-        <div *ngIf="isLoading.suppliers" class="text-center py-12">
+        <div *ngIf="isLoading.suppliers" class="text-center py-16">
           <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p class="mt-4" [class]="textSecondary">Loading suppliers...</p>
+          <p class="mt-4 font-medium" [class]="textSecondary">Loading suppliers...</p>
         </div>
 
         <!-- Suppliers Component -->
@@ -345,11 +416,14 @@
         </div>
       </div>
 
-      <!-- Autres vues -->
+      <!-- Other Views -->
       <div *ngIf="['customers', 'transactions', 'reports', 'settings'].includes(currentView)"
-           class="rounded-xl border p-6" [class]="cardBg + ' ' + borderColor">
-        <h3 class="text-xl font-bold mb-4" [class]="textPrimary">{{ getCurrentViewLabel() }}</h3>
-        <p [class]="textSecondary">{{ getCurrentViewLabel() }} management coming soon...</p>
+           class="rounded-2xl border border-blue-100 p-8 bg-white shadow-sm text-center" [class]="cardBg + ' ' + borderColor">
+        <svg class="w-20 h-20 mx-auto mb-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+        </svg>
+        <h3 class="text-xl font-bold mb-3 text-blue-900" [class]="textPrimary">{{ getCurrentViewLabel() }}</h3>
+        <p class="text-lg" [class]="textSecondary">{{ getCurrentViewLabel() }} management coming soon...</p>
       </div>
 
     </main>

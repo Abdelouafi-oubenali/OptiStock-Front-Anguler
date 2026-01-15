@@ -1,141 +1,192 @@
-<div class="p-6">
-  <!-- Header avec bouton d'ajout -->
-  <div class="flex justify-between items-center mb-6">
+<div class="p-8">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
     <div>
-      <h3 class="text-xl font-bold">Users Management</h3>
-      <p class="text-gray-600 mt-1">Total users: {{ filteredUsers.length }}</p>
+      <h3 class="text-3xl font-bold text-blue-900 flex items-center">
+        <svg class="w-8 h-8 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Users Management
+      </h3>
+      <p class="text-blue-600 mt-2 font-medium flex items-center">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Total users: <span class="font-bold ml-1">{{ filteredUsers.length }}</span>
+      </p>
     </div>
     <button
       (click)="openAddModal()"
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+      class="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center shadow-md hover:shadow-lg font-semibold"
     >
-      <span class="mr-2">+</span> Add New User
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Add New User
     </button>
   </div>
 
-  <!-- Messages d'alerte -->
-  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-    {{ errorMessage }}
+  <!-- Alert Messages -->
+  <div *ngIf="errorMessage" class="mb-6 p-5 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl shadow-sm">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-semibold">{{ errorMessage }}</span>
+    </div>
   </div>
 
-  <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-    {{ successMessage }}
+  <div *ngIf="successMessage" class="mb-6 p-5 bg-green-50 border-2 border-green-200 text-green-700 rounded-xl shadow-sm">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="font-semibold">{{ successMessage }}</span>
+    </div>
   </div>
 
-  <!-- Filtres -->
-  <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="relative">
-      <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
+  <!-- Filters -->
+  <div class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="relative md:col-span-2">
+      <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </span>
       <input
         type="text"
         [(ngModel)]="searchTerm"
-        placeholder="Search users..."
-        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Search users by name or email..."
+        class="w-full pl-12 pr-4 py-3.5 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white shadow-sm"
       />
     </div>
 
     <select
       [(ngModel)]="selectedRole"
-      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-full px-4 py-3.5 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white font-medium shadow-sm"
     >
       <option value="all">All Roles</option>
-      <option value="ADMIN"> Admin </option>
-      <option value="CLIENT"> Client </option>
-      <option value="WAREHOUSE_MANAGER">Warehose manger </option>
+      <option value="ADMIN">🔑 Admin</option>
+      <option value="CLIENT">👤 Client</option>
+      <option value="WAREHOUSE_MANAGER">📦 Warehouse Manager</option>
     </select>
-
-    <div class="text-right">
-      <span class="text-gray-600">
-        Showing {{ paginatedUsers.length }} of {{ filteredUsers.length }} users
-      </span>
-    </div>
   </div>
 
-  <!-- Table des utilisateurs -->
-  <div class="overflow-x-auto bg-white rounded-lg shadow">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
+  <!-- Results Info -->
+  <div class="mb-4 text-right">
+    <span class="text-blue-700 font-semibold">
+      Showing {{ paginatedUsers.length }} of {{ filteredUsers.length }} users
+    </span>
+  </div>
+
+  <!-- Users Table -->
+  <div class="overflow-hidden bg-white rounded-2xl shadow-xl border border-blue-100">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-blue-100">
+        <thead class="bg-gradient-to-r from-blue-600 to-blue-700">
         <tr>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">User</th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Email</th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Role</th>
+          <th class="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">Actions</th>
         </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let user of paginatedUsers" class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap">
+        </thead>
+        <tbody class="bg-white divide-y divide-blue-100">
+        <tr *ngFor="let user of paginatedUsers" class="hover:bg-blue-50 transition-colors">
+          <td class="px-6 py-5 whitespace-nowrap">
             <div class="flex items-center">
-              <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                <span class="text-blue-600 font-medium">
-                  {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
-                </span>
+              <div class="flex-shrink-0 h-12 w-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-md">
+                  <span class="text-white font-bold text-lg">
+                    {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                  </span>
               </div>
               <div class="ml-4">
-                <div class="text-sm font-medium text-gray-900">
+                <div class="text-sm font-bold text-blue-900">
                   {{ user.firstName }} {{ user.lastName }}
                 </div>
               </div>
             </div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-900">{{ user.email }}</div>
+          <td class="px-6 py-5 whitespace-nowrap">
+            <div class="text-sm font-medium text-blue-700">{{ user.email }}</div>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  [class.bg-red-100.text-red-800]="user.role === 'ADMIN'"
-                  [class.bg-green-100.text-green-800]="user.role === 'USER'"
-                  [class.bg-yellow-100.text-yellow-800]="user.role === 'MODERATOR'">
-              {{ user.role }}
-            </span>
+          <td class="px-6 py-5 whitespace-nowrap">
+              <span class="px-4 py-2 inline-flex text-xs leading-5 font-bold rounded-full shadow-sm"
+                    [class.bg-red-100.text-red-700]="user.role === 'ADMIN'"
+                    [class.bg-green-100.text-green-700]="user.role === 'CLIENT'"
+                    [class.bg-yellow-100.text-yellow-700]="user.role === 'WAREHOUSE_MANAGER'">
+                {{ user.role }}
+              </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <button
-              (click)="openEditModal(user)"
-              class="text-blue-600 hover:text-blue-900 mr-3 transition-colors"
-            >
-              Edit
-            </button>
-            <button
-              (click)="deleteUser(user)"
-              class="text-red-600 hover:text-red-900 transition-colors"
-            >
-              Delete
-            </button>
+          <td class="px-6 py-5 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+              <button
+                (click)="openEditModal(user)"
+                class="px-4 py-2 text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition-all font-semibold shadow-sm hover:shadow-md hover:scale-105 flex items-center"
+              >
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Edit
+              </button>
+              <button
+                (click)="deleteUser(user)"
+                class="px-4 py-2 text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-all font-semibold shadow-sm hover:shadow-md hover:scale-105 flex items-center"
+              >
+                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Delete
+              </button>
+            </div>
           </td>
         </tr>
 
-        <!-- Message si aucun utilisateur -->
+        <!-- Empty State -->
         <tr *ngIf="paginatedUsers.length === 0">
-          <td colspan="4" class="px-6 py-12 text-center text-gray-500">
-            No users found
+          <td colspan="4" class="px-6 py-16 text-center">
+            <svg class="w-24 h-24 mx-auto mb-4 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            </svg>
+            <h3 class="text-xl font-bold text-blue-900 mb-2">No Users Found</h3>
+            <p class="text-blue-600">Try adjusting your search or filter criteria</p>
           </td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Pagination -->
-  <div class="mt-6 flex justify-between items-center">
-    <div class="text-sm text-gray-600">
-      Page {{ currentPage }} of {{ totalPages }}
+  <div class="mt-8 flex justify-between items-center">
+    <div class="text-sm font-semibold text-blue-700">
+      Page <span class="font-bold">{{ currentPage }}</span> of <span class="font-bold">{{ totalPages }}</span>
     </div>
     <div class="flex space-x-2">
       <button
         (click)="changePage(currentPage - 1)"
         [disabled]="currentPage === 1"
-        class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+        class="px-4 py-2 border-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold shadow-sm hover:shadow-md"
+        [class]="currentPage === 1 ? 'border-gray-300 bg-gray-100 text-gray-400' : 'border-blue-200 text-blue-700 hover:bg-blue-50'"
       >
-        Previous
+        ← Previous
       </button>
 
-      <div class="flex space-x-1">
+      <div class="flex space-x-1.5">
         <button
           *ngFor="let page of pageNumbers"
           (click)="changePage(page)"
-          [class.bg-blue-600.text-white]="page === currentPage"
-          [class.bg-gray-100.text-gray-700]="page !== currentPage"
-          class="px-3 py-1 rounded-lg hover:bg-blue-100 transition-colors"
+          [class.bg-gradient-to-r]="page === currentPage"
+          [class.from-blue-600]="page === currentPage"
+          [class.to-blue-700]="page === currentPage"
+          [class.text-white]="page === currentPage"
+          [class.shadow-md]="page === currentPage"
+          [class.bg-white]="page !== currentPage"
+          [class.text-blue-700]="page !== currentPage"
+          [class.border-2]="page !== currentPage"
+          [class.border-blue-200]="page !== currentPage"
+          class="px-4 py-2 rounded-xl transition-all font-semibold hover:scale-105"
+          [class.hover:bg-blue-50]="page !== currentPage"
         >
           {{ page }}
         </button>
@@ -144,120 +195,143 @@
       <button
         (click)="changePage(currentPage + 1)"
         [disabled]="currentPage === totalPages"
-        class="px-3 py-1 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+        class="px-4 py-2 border-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all font-semibold shadow-sm hover:shadow-md"
+        [class]="currentPage === totalPages ? 'border-gray-300 bg-gray-100 text-gray-400' : 'border-blue-200 text-blue-700 hover:bg-blue-50'"
       >
-        Next
+        Next →
       </button>
     </div>
   </div>
 
-  <!-- Modal pour ajouter/modifier un utilisateur -->
-<div *ngIf="showModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-  <!-- Arrière-plan - ferme le modal quand on clique dessus -->
-  <div class="absolute inset-0" (click)="closeModal()"></div>
+  <!-- Add/Edit User Modal -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-blue-900/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="absolute inset-0" (click)="closeModal()"></div>
 
-  <!-- Contenu du modal - empêche la fermeture quand on clique dedans -->
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-md relative z-10" (click)="$event.stopPropagation()">
-    <div class="px-6 py-4 border-b flex justify-between items-center">
-      <h3 class="text-lg font-semibold">
-        {{ modalMode === 'add' ? 'Add New User' : 'Edit User' }}
-      </h3>
-      <button
-        type="button"
-        (click)="closeModal()"
-        class="text-gray-400 hover:text-gray-500"
-      >
-        ✕
-      </button>
-    </div>
-
-    <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
-        <input
-          type="text"
-          [(ngModel)]="selectedUser.firstName"
-          name="firstName"
-          required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
-        <input
-          type="text"
-          [(ngModel)]="selectedUser.lastName"
-          name="lastName"
-          required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-        <input
-          type="email"
-          [(ngModel)]="selectedUser.email"
-          name="email"
-          required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div *ngIf="modalMode === 'add'">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-        <input
-          type="password"
-          [(ngModel)]="selectedUser.password"
-          name="password"
-          required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Role *</label>
-        <select
-          [(ngModel)]="selectedUser.role"
-          name="role"
-          required
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="CLIENT">Cient</option>
-          <option value="ADMIN">Admin</option>
-          <option value="WAREHOUSE_MANAGER">wharehose manger</option>
-        </select>
-      </div>
-
-      <!-- Messages d'erreur dans le modal -->
-      <div *ngIf="errorMessage" class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-        {{ errorMessage }}
-      </div>
-
-      <div *ngIf="successMessage" class="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
-        {{ successMessage }}
-      </div>
-
-      <div class="flex justify-end space-x-3 pt-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative z-10" (click)="$event.stopPropagation()">
+      <div class="px-8 py-6 border-b border-blue-100 bg-gradient-to-r from-blue-50 to-white flex justify-between items-center">
+        <h3 class="text-2xl font-bold text-blue-900 flex items-center">
+          <svg class="w-7 h-7 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path *ngIf="modalMode === 'add'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            <path *ngIf="modalMode === 'edit'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          {{ modalMode === 'add' ? 'Add New User' : 'Edit User' }}
+        </h3>
         <button
           type="button"
           (click)="closeModal()"
-          [disabled]="isSubmitting"
-          class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+          class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-blue-100 transition-all"
         >
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          [disabled]="isSubmitting"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {{ isSubmitting ? 'Saving...' : (modalMode === 'add' ? 'Create User' : 'Update User') }}
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
-    </form>
+
+      <form (ngSubmit)="onSubmit()" class="p-8 space-y-5">
+        <div>
+          <label class="block text-sm font-bold text-blue-900 mb-2">
+            First Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="selectedUser.firstName"
+            name="firstName"
+            required
+            class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-blue-900 mb-2">
+            Last Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="selectedUser.lastName"
+            name="lastName"
+            required
+            class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-blue-900 mb-2">
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            [(ngModel)]="selectedUser.email"
+            name="email"
+            required
+            class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          />
+        </div>
+
+        <div *ngIf="modalMode === 'add'">
+          <label class="block text-sm font-bold text-blue-900 mb-2">
+            Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            [(ngModel)]="selectedUser.password"
+            name="password"
+            required
+            class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-blue-900 mb-2">
+            Role <span class="text-red-500">*</span>
+          </label>
+          <select
+            [(ngModel)]="selectedUser.role"
+            name="role"
+            required
+            class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+          >
+            <option value="CLIENT">👤 Client</option>
+            <option value="ADMIN">🔑 Admin</option>
+            <option value="WAREHOUSE_MANAGER">📦 Warehouse Manager</option>
+          </select>
+        </div>
+
+        <!-- Error/Success Messages in Modal -->
+        <div *ngIf="errorMessage" class="p-4 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl text-sm font-semibold">
+          {{ errorMessage }}
+        </div>
+
+        <div *ngIf="successMessage" class="p-4 bg-green-50 border-2 border-green-200 text-green-700 rounded-xl text-sm font-semibold">
+          {{ successMessage }}
+        </div>
+
+        <div class="flex justify-end space-x-4 pt-6 border-t-2 border-blue-100">
+          <button
+            type="button"
+            (click)="closeModal()"
+            [disabled]="isSubmitting"
+            class="px-6 py-3 border-2 border-blue-200 rounded-xl hover:bg-blue-50 disabled:opacity-50 transition-all font-semibold text-blue-700"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg font-semibold flex items-center"
+          >
+            <svg *ngIf="!isSubmitting" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path *ngIf="modalMode === 'add'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              <path *ngIf="modalMode === 'edit'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <svg *ngIf="isSubmitting" class="w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isSubmitting ? 'Saving...' : (modalMode === 'add' ? 'Create User' : 'Update User') }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 </div>
