@@ -2,6 +2,8 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../product/product';
 import { ProductService } from '../services/product-service';
+import {InventoryService} from '../services/inventory-service';
+import {InventoryDataLoding} from '../inventory-component/inventory.model';
 
 @Component({
   selector: 'app-home-component',
@@ -13,65 +15,70 @@ import { ProductService } from '../services/product-service';
 export class HomeComponent implements OnInit {
 
   products: Product[] = [];
+  inventoryDataLoding: InventoryDataLoding[] = [] ;
+
   isLoading = true;
   errorMessage = '';
   isDebugMode = false;
 
   constructor(
     private productService: ProductService,
+    private inventoryService: InventoryService,
     private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    console.log('🏠 HomeComponent initialisé');
-    this.loadProducts();
+    console.log(' HomeComponent initialisé');
+    this.loadAllData();
   }
 
-  loadProducts(): void {
-    console.log('🔄 Début du chargement des produits');
+  loadAllData(): void {
+    console.log(' Début du chargement de toutes les données');
     this.isLoading = true;
     this.errorMessage = '';
-
     this.cdRef.detectChanges();
 
     this.productService.getProducts().subscribe({
-      next: (data) => {
-        console.log(' Produits chargés avec succès:', data);
+      next: (products) => {
+        console.log(' Produits chargés:', products);
+        this.products = Array.isArray(products) ? products : [];
 
-        this.products = Array.isArray(data) ? data : [];
-        this.isLoading = false;
-
-        console.log(' Nombre de produits:', this.products.length);
-        console.log(' isLoading:', this.isLoading);
-
-        this.cdRef.detectChanges();
+        this.inventoryService.getInventories().subscribe({
+          next: (inventories) => {
+            console.log(' Inventaires chargés:', inventories);
+            this.inventoryDataLoding = Array.isArray(inventories) ? inventories : [];
+            this.isLoading = false;
+            this.cdRef.detectChanges();
+          },
+          error: (err) => {
+            console.error(' Erreur inventaire:', err);
+            this.errorMessage = 'Erreur lors du chargement du stock';
+            this.isLoading = false;
+            this.cdRef.detectChanges();
+          }
+        });
       },
       error: (err) => {
-        console.error(' Erreur de chargement:', err);
+        console.error(' Erreur produits:', err);
+        this.errorMessage = 'Erreur lors du chargement des produits';
         this.isLoading = false;
-        this.errorMessage = 'Erreur lors du chargement des produits. Veuillez réessayer.';
         this.cdRef.detectChanges();
-      },
-      complete: () => {
-        console.log('Chargement des produits terminé');
       }
     });
   }
 
-  // Méthode pour générer une image de produit
   getProductImage(product: Product): string {
     if (product.imageUrl && product.imageUrl.trim() !== '') {
       return product.imageUrl;
     }
 
     const productName = encodeURIComponent(product.name.substring(0, 20));
-    return `https://via.placeholder.com/400x400/1e293b/94a3b8?text=${productName}`;
+    return `https://placehold.co/400x400/1e293b/94a3b8?text=${productName}`;
   }
 
-  // Méthode pour gérer les erreurs d'image
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
-    imgElement.src = 'https://via.placeholder.com/400x400/1e293b/94a3b8?text=Image+Non+Disponible';
+    imgElement.src = 'https://placehold.co/400x400/1e293b/94a3b8?text=Image+Non+Disponible';
     imgElement.onerror = null;
   }
 
@@ -105,8 +112,13 @@ export class HomeComponent implements OnInit {
   };
 
   isInStock(product: Product): boolean {
-    console.log("product " , product.stock )
-    return product.stock !== undefined && product.stock > 0;
+    if (!product.id) return false;
+
+    const inventory = this.inventoryDataLoding.find(
+      inv => inv.product_id === product.id
+    );
+
+    return inventory ? inventory.qtyOnHand > 0 : false;
   }
 
   addToCart(product: Product): void {
