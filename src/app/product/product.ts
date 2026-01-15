@@ -10,6 +10,7 @@ export interface Product {
   sku: string;
   price: number;
   status?: string;
+  imageUrl?: string;
   quantity?: number;
   stock?: number;
 }
