@@ -48,6 +48,14 @@ export class UserService {
       .pipe(catchError(this.handleError));
   }
 
+  getUserByEmail(email: string): Observable<User> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<User>(
+      `${this.apiUrl}/email/${email}`,
+      { headers }
+    );
+  }
+
   deleteUser(id: string): Observable<void> {
     const headers = this.getAuthHeaders();
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers })

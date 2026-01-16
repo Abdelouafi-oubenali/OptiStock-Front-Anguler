@@ -4,6 +4,8 @@ import { Product } from '../product/product';
 import { ProductService } from '../services/product-service';
 import {InventoryService} from '../services/inventory-service';
 import {InventoryDataLoding} from '../inventory-component/inventory.model';
+import { UserService } from '../services/user-service';
+import {User} from '../users/user.model';
 
 @Component({
   selector: 'app-home-component',
@@ -16,6 +18,7 @@ export class HomeComponent implements OnInit {
 
   products: Product[] = [];
   inventoryDataLoding: InventoryDataLoding[] = [] ;
+  userLogin!: User;
 
   isLoading = true;
   errorMessage = '';
@@ -24,6 +27,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private inventoryService: InventoryService,
+    private userService: UserService ,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -121,10 +125,31 @@ export class HomeComponent implements OnInit {
     return inventory ? inventory.qtyOnHand > 0 : false;
   }
 
-  addToCart(product: Product): void {
-    console.log('🛒 Ajouter au panier:', product);
-    alert(`Produit "${product.name}" ajouté au panier!`);
+  addToPanier(product: Product): void {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      console.log(' Aucun token trouvé');
+      return;
+    }
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const useremail = payload.sub;
+
+    this.userService.getUserByEmail(useremail).subscribe({
+      next: (user: User) => {
+        this.userLogin = user;
+        console.log(' Utilisateur récupéré :', user);
+      },
+      error: (err) => {
+        console.error(' Erreur lors de la récupération', err);
+      }
+    });
+
+
+
+    alert(`Produit "${product.name}" ajouté au panier !`);
   }
+
 
   getProductBadge(product: Product): string {
     if (product.stock !== undefined && product.stock < 10 && product.stock > 0) {
