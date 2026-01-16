@@ -1,0 +1,141 @@
+<div class="h-full flex flex-col">
+  <!-- Header -->
+  <div class="border-b border-slate-700 pb-4">
+    <h2 class="text-2xl font-bold text-white mb-2">Votre Panier</h2>
+    <p class="text-slate-400">
+      Connecté en tant que: <span class="text-blue-400 font-medium">{{ user?.email || 'Non connecté' }}</span>
+    </p>
+  </div>
+
+  <!-- Recently Added Product -->
+  <div *ngIf="productSelect" class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
+    <p class="text-blue-300 text-sm mb-2">Produit ajouté récemment:</p>
+    <div class="flex items-center space-x-4">
+      <div class="w-16 h-16 bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
+        <img [src]="productSelect.imageUrl"
+             [alt]="productSelect.name"
+             class="w-full h-full object-cover"
+             onerror="this.src='https://placehold.co/400x400/1e293b/94a3b8?text=Image'">
+      </div>
+      <div class="flex-1 min-w-0">
+        <h4 class="font-medium text-white truncate">{{ productSelect.name }}</h4>
+        <p class="text-blue-300 font-bold">{{ productSelect.price | number:'1.2-2' }}€</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Content with Scroll -->
+  <div class="flex-1 overflow-hidden flex flex-col">
+    <div *ngIf="cartItems.length > 0; else emptyCart" class="flex-1 flex flex-col min-h-0">
+      <!-- Scrollable Items Container -->
+      <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+        <div class="space-y-4">
+          <div *ngFor="let item of cartItems"
+               class="bg-slate-800/50 rounded-xl p-4 border border-slate-700 hover:border-blue-500/50 transition-colors duration-300">
+            <div class="flex items-start justify-between">
+              <div class="flex items-start space-x-4 flex-1 min-w-0">
+                <div class="w-16 h-16 bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">
+                  <img [src]="item.imageUrl"
+                       [alt]="item.name"
+                       class="w-full h-full object-cover"
+                       onerror="this.src='https://placehold.co/400x400/1e293b/94a3b8?text=Image'">
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-medium text-white mb-1 truncate">{{ item.name }}</h4>
+                  <p class="text-slate-400 text-sm mb-2 line-clamp-2">{{ item.description || 'Pas de description' }}</p>
+                  <p class="text-blue-400 font-bold">{{ item.price | number:'1.2-2' }}€</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-end space-y-3">
+                <!-- Quantity Controls -->
+                <div class="flex items-center space-x-2">
+                  <button (click)="updateQuantity(item.id, item.quantity - 1)"
+                          class="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded-full flex items-center justify-center text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                          [disabled]="item.quantity <= 1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                    </svg>
+                  </button>
+                  <span class="w-12 text-center font-medium text-white">{{ item.quantity }}</span>
+                  <button (click)="updateQuantity(item.id, item.quantity + 1)"
+                          class="w-8 h-8 bg-slate-700 hover:bg-slate-600 rounded-full flex items-center justify-center text-white transition-colors duration-300">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Remove Button -->
+                <button (click)="removeItemFromCart(item.id)"
+                        class="w-8 h-8 bg-red-500/20 hover:bg-red-500/30 rounded-full flex items-center justify-center text-red-400 transition-colors duration-300">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Item Total -->
+            <div class="mt-3 pt-3 border-t border-slate-700 text-right">
+              <p class="text-slate-300">
+                Sous-total: <span class="font-bold text-white">{{ (item.price * item.quantity) | number:'1.2-2' }}€</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Summary (Fixed at bottom of scrollable area) -->
+      <div class="pt-6 border-t border-slate-700 mt-4 flex-shrink-0">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-400">Sous-total:</span>
+          <span class="text-white font-medium">{{ getTotal() | number:'1.2-2' }}€</span>
+        </div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-slate-400">Livraison:</span>
+          <span class="text-white font-medium">Gratuite</span>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+          <span class="text-lg font-bold text-white">Total:</span>
+          <span class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+            {{ getTotal() | number:'1.2-2' }}€
+          </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button (click)="clearCart()"
+                  [disabled]="cartItems.length === 0"
+                  class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-xl font-medium transition-colors duration-300 flex-1 disabled:cursor-not-allowed">
+            Vider le panier
+          </button>
+          <button (click)="checkout()"
+                  [disabled]="cartItems.length === 0"
+                  class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-slate-700 disabled:to-slate-800 text-white rounded-xl font-medium transition-all duration-300 transform hover:scale-105 disabled:transform-none flex-1 shadow-lg shadow-blue-500/50 disabled:shadow-none disabled:cursor-not-allowed">
+            Commander
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Cart Template -->
+    <ng-template #emptyCart>
+      <div class="flex-1 flex flex-col items-center justify-center py-8">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-full mb-6">
+          <svg class="w-10 h-10 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3 text-center">Votre panier est vide</h3>
+        <p class="text-slate-400 mb-8 text-center max-w-md">
+          Ajoutez des produits à votre panier pour commencer vos achats.
+        </p>
+        <button (click)="clearCart()"
+                class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-medium transition-all duration-300">
+          Continuer mes achats
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</div>

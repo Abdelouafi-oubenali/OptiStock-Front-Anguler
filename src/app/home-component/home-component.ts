@@ -2,23 +2,28 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../product/product';
 import { ProductService } from '../services/product-service';
-import {InventoryService} from '../services/inventory-service';
-import {InventoryDataLoding} from '../inventory-component/inventory.model';
+import { InventoryService } from '../services/inventory-service';
+import { InventoryDataLoding } from '../inventory-component/inventory.model';
 import { UserService } from '../services/user-service';
-import {User} from '../users/user.model';
+import { User } from '../users/user.model';
+import { UserComponent } from '../users/UsersComponent';
+import { Panier } from '../panier/panier';
 
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UserComponent, Panier],
   templateUrl: './home-component.html',
   styleUrls: ['./home-component.css']
 })
 export class HomeComponent implements OnInit {
 
   products: Product[] = [];
-  inventoryDataLoding: InventoryDataLoding[] = [] ;
+  inventoryDataLoding: InventoryDataLoding[] = [];
   userLogin!: User;
+  productSelect: Product | null = null;
+
+  currentView = 'home';
 
   isLoading = true;
   errorMessage = '';
@@ -27,35 +32,35 @@ export class HomeComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private inventoryService: InventoryService,
-    private userService: UserService ,
+    private userService: UserService,
     private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    console.log(' HomeComponent initialisé');
+    console.log('HomeComponent initialisé');
     this.loadAllData();
   }
 
   loadAllData(): void {
-    console.log(' Début du chargement de toutes les données');
+    console.log('Début du chargement de toutes les données');
     this.isLoading = true;
     this.errorMessage = '';
     this.cdRef.detectChanges();
 
     this.productService.getProducts().subscribe({
       next: (products) => {
-        console.log(' Produits chargés:', products);
+        console.log('Produits chargés:', products);
         this.products = Array.isArray(products) ? products : [];
 
         this.inventoryService.getInventories().subscribe({
           next: (inventories) => {
-            console.log(' Inventaires chargés:', inventories);
+            console.log('Inventaires chargés:', inventories);
             this.inventoryDataLoding = Array.isArray(inventories) ? inventories : [];
             this.isLoading = false;
             this.cdRef.detectChanges();
           },
           error: (err) => {
-            console.error(' Erreur inventaire:', err);
+            console.error('Erreur inventaire:', err);
             this.errorMessage = 'Erreur lors du chargement du stock';
             this.isLoading = false;
             this.cdRef.detectChanges();
@@ -63,7 +68,7 @@ export class HomeComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.error(' Erreur produits:', err);
+        console.error('Erreur produits:', err);
         this.errorMessage = 'Erreur lors du chargement des produits';
         this.isLoading = false;
         this.cdRef.detectChanges();
@@ -129,27 +134,31 @@ export class HomeComponent implements OnInit {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.log(' Aucun token trouvé');
+      console.log('Aucun token trouvé');
+      alert('Veuillez vous connecter pour ajouter des articles au panier');
       return;
     }
+
+    this.productSelect = product;
+
     const payload = JSON.parse(atob(token.split('.')[1]));
     const useremail = payload.sub;
 
     this.userService.getUserByEmail(useremail).subscribe({
       next: (user: User) => {
         this.userLogin = user;
-        console.log(' Utilisateur récupéré :', user);
+        console.log('Utilisateur récupéré :', user);
+        this.setCurrentView('panier');
+        this.cdRef.detectChanges();
       },
       error: (err) => {
-        console.error(' Erreur lors de la récupération', err);
+        console.error('Erreur lors de la récupération', err);
+        alert('Erreur lors de la récupération de l\'utilisateur');
       }
     });
 
-
-
     alert(`Produit "${product.name}" ajouté au panier !`);
   }
-
 
   getProductBadge(product: Product): string {
     if (product.stock !== undefined && product.stock < 10 && product.stock > 0) {
@@ -164,7 +173,53 @@ export class HomeComponent implements OnInit {
     return '';
   }
 
+  setCurrentView(view: string): void {
+    this.currentView = view;
+    if (view === 'home') {
+      this.productSelect = null;
+    }
+  }
+
   toggleDebug(): void {
     this.isDebugMode = !this.isDebugMode;
+  }
+
+  // New method to check if user is logged in
+  isUserLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  // New method to get cart items count from localStorage
+  getCartItemsCount(): number {
+    const cartData = localStorage.getItem('cart');
+    if (cartData) {
+      const cartItems = JSON.parse(cartData);
+      return cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
+    }
+    return 0;
+  }
+
+  // Méthode pour obtenir l'utilisateur connecté
+  getLoggedInUser(): void {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const useremail = payload.sub;
+
+      this.userService.getUserByEmail(useremail).subscribe({
+        next: (user: User) => {
+          this.userLogin = user;
+          console.log('Utilisateur connecté :', user);
+          this.cdRef.detectChanges();
+        },
+        error: (err) => {
+          console.error('Erreur lors de la récupération de l\'utilisateur', err);
+        }
+      });
+    } catch (error) {
+      console.error('Erreur de parsing du token', error);
+    }
   }
 }
