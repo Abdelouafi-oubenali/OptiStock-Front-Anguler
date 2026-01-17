@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { User } from '../users/user.model';
 import { Product } from '../product/product';
+import {OrderService} from '../services/order-service';
+import {SalesOrderLine , SalseOrder } from '../orders/order-models';
 
 @Component({
   selector: 'app-panier',
@@ -13,6 +15,11 @@ import { Product } from '../product/product';
 export class Panier implements OnInit {
   @Input() user: User | null = null;
   @Input() productSelect: Product | null = null;
+  @Input() currentSalesOrder: SalseOrder | null = null;
+
+  salseOrderLine: SalesOrderLine | null = null;
+
+  constructor(private orderService : OrderService) {}
 
   cartItems: any[] = [];
 
@@ -26,14 +33,12 @@ export class Panier implements OnInit {
       this.cartItems = JSON.parse(cartData);
     }
 
-    // Si un produit a été ajouté récemment, on l'ajoute au panier
     if (this.productSelect) {
       this.addItemToCart(this.productSelect);
     }
   }
 
   addItemToCart(product: Product): void {
-    // Vérifier si le produit existe déjà dans le panier
     const existingItem = this.cartItems.find(item => item.id === product.id);
 
     if (existingItem) {
@@ -57,10 +62,15 @@ export class Panier implements OnInit {
   updateQuantity(productId: string, quantity: number): void {
     const item = this.cartItems.find(item => item.id === productId);
     if (item) {
-      item.quantity = Math.max(1, quantity); // Minimum 1
+      item.quantity = Math.max(1, quantity); // الحد الأدنى 1
       this.saveCart();
+
+      if (this.productSelect && this.productSelect.id === productId) {
+        this.productSelect.quantity = item.quantity;
+      }
     }
   }
+
 
   saveCart(): void {
     localStorage.setItem('cart', JSON.stringify(this.cartItems));
@@ -78,9 +88,28 @@ export class Panier implements OnInit {
   }
 
   checkout(): void {
-    console.log('Commande passée pour l\'utilisateur:', this.user?.email);
-    console.log('Articles:', this.cartItems);
-    console.log('Total:', this.getTotal());
-    alert('Fonctionnalité de paiement à implémenter');
+    if (!this.currentSalesOrder) {
+      alert('Aucun produit ou commande sélectionné');
+      return;
+    }
+
+    this.cartItems.forEach(item => {
+      const orderLine: SalesOrderLine = {
+        product_id: item.id,
+        sales_order_id: this.currentSalesOrder!.id!,
+        quantity: item.quantity,
+        unitPrice: item.price
+      };
+
+      this.orderService.createSalesOrderLine(orderLine).subscribe({
+        next: (res) => console.log('Ligne créée :', res),
+        error: (err) => console.error('Erreur ligne', err)
+      });
+    });
+
+    alert('Tous les produits ont été ajoutés à la commande !');
+    this.clearCart();
   }
+
+
 }

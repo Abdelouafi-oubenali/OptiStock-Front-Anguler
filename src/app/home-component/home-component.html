@@ -1,4 +1,5 @@
 <!-- Header Modern -->
+<script src="../orders/order-models.ts"></script>
 <header class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 backdrop-blur-lg bg-opacity-95 border-b border-blue-700/50">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
@@ -34,7 +35,7 @@
           Connexion
         </button>
         <button *ngIf="isUserLoggedIn()" class="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/50">
-          Mon Compte
+          Mes comments
         </button>
       </nav>
 
@@ -82,7 +83,9 @@
     <!-- Le composant Panier prendra toute la hauteur disponible -->
     <app-panier
       [user]="userLogin"
-      [productSelect]="productSelect">
+      [productSelect]="productSelect"
+      [currentSalesOrder] = "currentSalesOrder"
+    >
     </app-panier>
   </div>
 </div>

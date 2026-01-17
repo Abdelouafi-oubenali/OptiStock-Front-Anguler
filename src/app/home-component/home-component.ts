@@ -8,6 +8,8 @@ import { UserService } from '../services/user-service';
 import { User } from '../users/user.model';
 import { UserComponent } from '../users/UsersComponent';
 import { Panier } from '../panier/panier';
+import { OrderService } from '../services/order-service' ;
+import {SalseOrder , SalesOrderLine} from '../orders/order-models';
 
 @Component({
   selector: 'app-home-component',
@@ -22,6 +24,10 @@ export class HomeComponent implements OnInit {
   inventoryDataLoding: InventoryDataLoding[] = [];
   userLogin!: User;
   productSelect: Product | null = null;
+  salesOrder: SalseOrder | null = null;
+  salseOrderLine: SalesOrderLine | null = null;
+  currentSalesOrder!: SalseOrder;
+
 
   currentView = 'home';
 
@@ -33,6 +39,7 @@ export class HomeComponent implements OnInit {
     private productService: ProductService,
     private inventoryService: InventoryService,
     private userService: UserService,
+    private orderService: OrderService,
     private cdRef: ChangeDetectorRef
   ) {}
 
@@ -127,14 +134,13 @@ export class HomeComponent implements OnInit {
       inv => inv.product_id === product.id
     );
 
-    return inventory ? inventory.qtyOnHand > 0 : false;
+    return true;
   }
 
   addToPanier(product: Product): void {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      console.log('Aucun token trouvé');
       alert('Veuillez vous connecter pour ajouter des articles au panier');
       return;
     }
@@ -146,18 +152,36 @@ export class HomeComponent implements OnInit {
 
     this.userService.getUserByEmail(useremail).subscribe({
       next: (user: User) => {
+        if (!user.id) {
+          console.error('User ID manquant');
+          return;
+        }
+
         this.userLogin = user;
-        console.log('Utilisateur récupéré :', user);
-        this.setCurrentView('panier');
-        this.cdRef.detectChanges();
+
+        this.salesOrder = {
+          user_id: user.id,
+          orderStatus: 'ICREATED'
+        };
+
+        this.orderService.createSalesOrder(this.salesOrder).subscribe({
+          next: (order) => {
+            this.currentSalesOrder = order;
+            alert(`Produit "${product.name}" ajouté au panier !`);
+            this.setCurrentView('panier');
+            this.cdRef.detectChanges();
+          },
+          error: (err) => {
+            console.error('Erreur création commande', err);
+            alert('Erreur lors de la création de la commande');
+          }
+        });
       },
       error: (err) => {
-        console.error('Erreur lors de la récupération', err);
+        console.error('Erreur récupération utilisateur', err);
         alert('Erreur lors de la récupération de l\'utilisateur');
       }
     });
-
-    alert(`Produit "${product.name}" ajouté au panier !`);
   }
 
   getProductBadge(product: Product): string {
