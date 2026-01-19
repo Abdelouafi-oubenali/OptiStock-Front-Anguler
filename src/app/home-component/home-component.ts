@@ -10,11 +10,12 @@ import { UserComponent } from '../users/UsersComponent';
 import { Panier } from '../panier/panier';
 import { OrderService } from '../services/order-service' ;
 import {SalseOrder , SalesOrderLine} from '../orders/order-models';
+import { OrdersComponent} from '../orders/orders-component';
 
 @Component({
   selector: 'app-home-component',
   standalone: true,
-  imports: [CommonModule, UserComponent, Panier],
+  imports: [CommonModule, UserComponent, Panier , OrdersComponent],
   templateUrl: './home-component.html',
   styleUrls: ['./home-component.css']
 })
@@ -28,8 +29,8 @@ export class HomeComponent implements OnInit {
   salseOrderLine: SalesOrderLine | null = null;
   currentSalesOrder!: SalseOrder;
 
-
-  currentView = 'home';
+  // CORRIGÉ ICI : Ajoutez 'orders' aux valeurs possibles
+  currentView: 'home' | 'panier' | 'orders' = 'home';
 
   isLoading = true;
   errorMessage = '';
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     console.log('HomeComponent initialisé');
     this.loadAllData();
+    this.getLoggedInUser(); // Charger l'utilisateur au démarrage
   }
 
   loadAllData(): void {
@@ -197,11 +199,13 @@ export class HomeComponent implements OnInit {
     return '';
   }
 
-  setCurrentView(view: string): void {
+  // CORRIGÉ ICI : Ajoutez 'orders' au type de paramètre
+  setCurrentView(view: 'home' | 'panier' | 'orders'): void {
     this.currentView = view;
     if (view === 'home') {
       this.productSelect = null;
     }
+    console.log(`Vue changée vers: ${view}`);
   }
 
   toggleDebug(): void {
