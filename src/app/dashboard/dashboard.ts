@@ -457,49 +457,89 @@ export class DashboardComponent implements OnInit {
   }
 
   getStats(): StatCard[] {
+    const stats: StatCard[] = [];
 
-
-    return [
-      {
-        title: 'Total Stock Value',
-        value: this.mockAnalytics.totalStockValue,
+    // Total Produits
+    if (this.products.length > 0) {
+      const totalProductValue = this.products.reduce((sum, p) => sum + ((p.price || 0) * (p.quantity || 0)), 0);
+      stats.push({
+        title: 'Total Products',
+        value: this.products.length,
         icon: 'package',
         trend: 'neutral'
-      },
-      {
-        title: 'Total Sales',
-        value: this.mockAnalytics.totalSales,
-        icon: 'trending-up',
-        change: this.mockAnalytics.salesGrowth,
+      });
+      
+      // Total Stock Value (basé sur les produits réels)
+      stats.push({
+        title: 'Total Stock Value',
+        value: totalProductValue,
+        icon: 'package',
+        trend: 'neutral'
+      });
+    }
+
+    // Total Utilisateurs
+    if (this.users.length > 0) {
+      stats.push({
+        title: 'Total Users',
+        value: this.users.length,
+        icon: 'users',
         trend: 'up'
-      },
-      {
-        title: 'Total Purchases',
-        value: this.mockAnalytics.totalPurchases,
-        icon: 'shopping-cart',
-        change: this.mockAnalytics.purchaseGrowth,
-        trend: 'down'
-      },
-      {
-        title: 'Net Profit',
-        value: this.mockAnalytics.profit,
-        icon: 'dollar-sign',
-        change: this.mockAnalytics.profitGrowth,
-        trend: 'up'
-      },
-      {
-        title: 'Total Suppliers',
-        value: this.suppliers.length,
-        icon: 'truck',
-        trend: 'up'
-      },
-      {
+      });
+    }
+
+    // Total Commandes
+    if (this.salesOrders.length > 0) {
+      stats.push({
         title: 'Total Orders',
         value: this.salesOrders.length,
         icon: 'credit-card',
         trend: 'up'
-      }
-    ];
+      });
+    }
+
+    // Total Fournisseurs
+    if (this.suppliers.length > 0) {
+      stats.push({
+        title: 'Total Suppliers',
+        value: this.suppliers.length,
+        icon: 'truck',
+        trend: 'up'
+      });
+    }
+
+    // Total Entrepôts
+    if (this.warehouses.length > 0) {
+      stats.push({
+        title: 'Total Warehouses',
+        value: this.warehouses.length,
+        icon: 'warehouse',
+        trend: 'neutral'
+      });
+    }
+
+    // Total Inventaire
+    if (this.inventoryView.length > 0) {
+      const totalInventoryValue = this.inventoryView.reduce((sum, inv) => sum + (inv.qtyOnHand || 0), 0);
+      stats.push({
+        title: 'Total Inventory Items',
+        value: totalInventoryValue,
+        icon: 'boxes',
+        trend: 'neutral'
+      });
+    }
+
+    // Si aucune donnée réelle n'est disponible, afficher au moins un message
+    if (stats.length === 0) {
+      stats.push({
+        title: 'No Data Available',
+        value: 0,
+        icon: 'info',
+        trend: 'neutral'
+      });
+    }
+
+    return stats;
   }
 
   getTrendColorClass(trend: 'up' | 'down' | 'neutral'): string {
