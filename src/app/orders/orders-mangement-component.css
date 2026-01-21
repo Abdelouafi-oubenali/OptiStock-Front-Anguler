@@ -1,0 +1,26 @@
+/* Styles pour l'impression */
+@media print {
+  .orders-management-container button,
+  .orders-management-container .no-print {
+    display: none !important;
+  }
+  
+  .orders-management-container {
+    padding: 0 !important;
+  }
+  
+  .bg-gray-50, .bg-blue-50 {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* Styles pour les boutons +/- */
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hover\:bg-gray-50:hover {
+  transition: background-color 0.2s ease;
+}
