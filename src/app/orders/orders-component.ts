@@ -58,10 +58,8 @@ export class OrdersComponent implements OnInit {
   }
 
   loadUserOrders(): void {
-    console.log('🚀 Début du chargement des commandes...');
 
     if (!this.userLogin) {
-      console.warn('⚠️ Aucun utilisateur connecté');
       this.errorMessage = 'Vous devez être connecté pour voir vos commandes';
       return;
     }
@@ -73,9 +71,7 @@ export class OrdersComponent implements OnInit {
       this.mockLoadOrders();
       this.applyFilters();
       this.updatePagination();
-      console.log(`✅ ${this.orders.length} commande(s) chargée(s)`);
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des commandes:', error);
       this.errorMessage = 'Erreur lors du chargement de vos commandes';
     } finally {
       this.isLoading = false;

@@ -18,7 +18,19 @@ export class OrderService {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
+
   }
+
+    getSalseOrders(): Observable<SalseOrder[]>{
+      const headers = this.getAuthHeaders();
+      return this.http.get<SalseOrder[]>(this.apiUrlSalesOrder, { headers });
+    }
+
+  getSalseOrderLines(): Observable<SalesOrderLine[]>{
+    const headers = this.getAuthHeaders();
+    return this.http.get<SalesOrderLine[]>(this.apiUrlSalesOrderLine, { headers });
+  }
+
 
   createSalesOrder(order: SalseOrder): Observable<SalseOrder> {
     return this.http.post<SalseOrder>(
