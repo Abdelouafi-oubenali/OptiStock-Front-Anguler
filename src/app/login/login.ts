@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth';
+
 import { Router } from '@angular/router';
+import {jwtDecode} from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
-  standalone: true, 
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.html'
 })
@@ -25,14 +27,26 @@ export class LoginComponent {
     };
 
     this.authService.login(data).subscribe({
-      next: (res: any) => {  
-        localStorage.setItem('token', res.accessToken);
-        console.log(res.accessToken);
-        this.router.navigate(['/dashboard'])
+      next: (res: any) => {
+        const token = res.accessToken;
+        localStorage.setItem('token', token);
+
+        const decoded: any = jwtDecode(token);
+        const role = decoded.role;
+
+        console.log('role extrait :', role);
+
+        if (role === 'ADMIN') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: () => {
         this.error = 'Email ou mot de passe incorrect';
       }
     });
   }
+
+
 }

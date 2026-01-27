@@ -1,3 +1,4 @@
+<script src="../users/UsersComponent.ts"></script>
 <div class="min-h-screen flex bg-gradient-to-br from-blue-50 via-white to-blue-50" [class]="bgClass">
 
   <!-- Sidebar -->
@@ -264,7 +265,7 @@
           </button>
 
           <!-- Notifications -->
-          <button 
+          <button
             aria-label="Notifications"
             class="p-2.5 rounded-xl hover:bg-blue-50 transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative"
             [class.hover:bg-gray-700]="darkMode"
@@ -353,7 +354,7 @@
               </button>
             </div>
             <div class="space-y-3">
-              <div *ngFor="let supplier of suppliers.slice(0, 5)" 
+              <div *ngFor="let supplier of suppliers.slice(0, 5)"
                    class="flex items-center justify-between p-4 rounded-xl bg-blue-50/50 dark:bg-gray-700/50 hover:bg-blue-100/50 transition-colors">
                 <div class="min-w-0 flex-1">
                   <p class="font-semibold text-sm truncate" [class]="textPrimary">{{ supplier.name }}</p>
@@ -396,7 +397,7 @@
             </button>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div *ngFor="let product of products.slice(0, 6)" 
+            <div *ngFor="let product of products.slice(0, 6)"
                  class="p-5 border border-blue-100 rounded-xl hover:shadow-md transition-shadow duration-200 bg-blue-50/30 dark:bg-gray-800/50">
               <p class="font-semibold text-sm mb-2 truncate" [class]="textPrimary">{{ product.name }}</p>
               <p class="text-sm text-blue-600 dark:text-blue-400 flex items-center" [class]="textSecondary">
