@@ -18,6 +18,7 @@ import { Supplier } from '../suppliers-component/supplier.model';
 import {SalesOrderLine, SalseOrder} from '../orders/order-models';
 import { OrderService } from '../services/order-service';
 import {OrdersManagementComponent} from '../orders/orders-mangement-component';
+import { PoListComponent } from '../purchase-orders/components/po-list.component';
 
 interface MenuItem {
   id: string;
@@ -44,7 +45,8 @@ interface StatCard {
     WarehousesComponent,
     InventoryComponent,
     OrdersManagementComponent,
-    SuppliersComponent
+    SuppliersComponent,
+    PoListComponent
   ],
   templateUrl: './dashboard.html'
 })
