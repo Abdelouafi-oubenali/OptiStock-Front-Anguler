@@ -1,5 +1,5 @@
 export interface OrderLineCreate {
-  productId: string;
+  productId: string | null;
   quantity: number;
   unitPrice: number;
 }

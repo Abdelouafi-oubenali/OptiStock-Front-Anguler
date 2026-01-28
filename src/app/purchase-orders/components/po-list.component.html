@@ -1,72 +1,100 @@
-<div class="po-list bg-white rounded-lg shadow-md p-4">
-  <!-- Filtres -->
-  <div class="filters mb-6">
-    <select
-      (change)="onStatusFilterChange($event)"
-      class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
-    >
-      <option value="">Tous les statuts</option>
-      <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
-    </select>
+<div class="po-list space-y-6">
+  <!-- Formulaire -->
+  <div *ngIf="showForm" class="mb-8">
+    <app-po-form
+      [order]="editingOrder"
+      [isEdit]="isEditMode"
+      (save)="onFormSave($event)"
+      (cancel)="onFormCancel()">
+    </app-po-form>
   </div>
 
-  <!-- Liste -->
-  <div class="overflow-x-auto rounded-lg border border-gray-200">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-      <tr>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Référence</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fournisseur</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-      </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-      <tr *ngFor="let order of orders$ | async" class="hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{order.reference}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{order.supplierName}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{order.orderDate | date}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{order.totalAmount | currency}}</td>
-        <td class="px-6 py-4 whitespace-nowrap">
-            <span [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + getStatusClass(order.status)">
-              {{order.status}}
-            </span>
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          <div class="flex flex-wrap gap-2 items-center">
-            <button
-              (click)="viewOrder(order.id!)"
-              class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-            >
-              Voir
-            </button>
-            <button
-              (click)="editOrder(order.id!)"
-              class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-            >
-              Modifier
-            </button>
-            <button
-              (click)="deleteOrder(order.id!)"
-              class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
-            >
-              Supprimer
-            </button>
-            <select
-              (change)="onStatusChange(order.id!, $event)"
-              class="px-2 py-1.5 border border-gray-300 rounded-md text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
-            >
-              <option value="">Changer statut</option>
-              <option *ngFor="let status of getAvailableStatuses(order.status)"
-                      [value]="status">{{status}}</option>
-            </select>
-          </div>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <!-- Bouton créer -->
+  <div *ngIf="!showForm" class="flex justify-end mb-6">
+    <button
+      (click)="openCreateForm()"
+      class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors font-medium inline-flex items-center gap-2"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Nouvelle commande
+    </button>
+  </div>
+
+  <!-- Filtres et liste -->
+  <div class="bg-white rounded-lg shadow-md">
+    <!-- Filtres -->
+    <div class="p-4 border-b">
+      <select
+        (change)="onStatusFilterChange($event)"
+        class="w-full md:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
+      >
+        <option value="">Tous les statuts</option>
+        <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+      </select>
+    </div>
+
+    <!-- Liste -->
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de création</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Livraison attendue</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lignes</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let order of orders$ | async" class="hover:bg-gray-50 transition-colors">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{order.id | slice:0:8}}...</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{order.createdAt | date:'short'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{order.expectedDelivery | date:'short'}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{order.orderLines?.length || 0}}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{getTotalAmount(order) | currency}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+              <span [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + getStatusClass(order.status)">
+                {{order.status}}
+              </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <div class="flex flex-wrap gap-2 items-center">
+              <button
+                (click)="viewOrder(order.id!)"
+                class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              >
+                Voir
+              </button>
+              <button
+                (click)="openEditForm(order)"
+                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+              >
+                Modifier
+              </button>
+              <button
+                (click)="deleteOrder(order.id!)"
+                class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+              >
+                Supprimer
+              </button>
+              <select
+                (change)="onStatusChange(order.id!, $event)"
+                class="px-2 py-1.5 border border-gray-300 rounded-md text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-colors"
+              >
+                <option value="">Changer statut</option>
+                <option *ngFor="let status of getAvailableStatuses(order.status)"
+                        [value]="status">{{status}}</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Loading -->

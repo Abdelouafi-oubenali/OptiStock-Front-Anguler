@@ -6,17 +6,22 @@ import { PurchaseOrder } from '../purchase-order.model';
 import { PurchaseOrderStatus } from '../purchase-order.model';
 import * as PoActions from '../po.actions';
 import * as PoSelectors from '../po.selectors';
+import { PoFormComponent } from './po-form.component';
 
 @Component({
   selector: 'app-po-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PoFormComponent],
   templateUrl: './po-list.component.html'
 })
 export class PoListComponent implements OnInit {
   orders$: Observable<PurchaseOrder[]>;
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
+
+  showForm = false;
+  isEditMode = false;
+  editingOrder?: PurchaseOrder;
 
   statuses: PurchaseOrderStatus[] = [
     'DRAFT', 'CREATED', 'RECEIVED', 'APPROVED', 'CANCELLED'
@@ -41,6 +46,89 @@ export class PoListComponent implements OnInit {
   }
 
   editOrder(id: string) {
+    const order = this.orders$;
+    // You can implement navigation or open form for editing
+    console.log('Edit order:', id);
+  }
+
+  openCreateForm() {
+    this.showForm = true;
+    this.isEditMode = false;
+    this.editingOrder = undefined;
+  }
+
+  openEditForm(order: PurchaseOrder) {
+    this.showForm = true;
+    this.isEditMode = true;
+    this.editingOrder = order;
+  }
+
+  onFormSave(po: PurchaseOrder) {
+    if (this.isEditMode && po.id) {
+      this.store.dispatch(PoActions.updatePurchaseOrder({ 
+        id: po.id, 
+        updates: {
+          status: po.status,
+          expectedDelivery: po.expectedDelivery,
+          shippingAddress: po.shippingAddress,
+          billingAddress: po.billingAddress,
+          notes: po.notes
+        } 
+      }));
+    } else {
+      // Create new PO with all provided fields
+      let expectedDeliveryISO = po.expectedDelivery || new Date().toISOString();
+      
+      // Si c'est une date string au format YYYY-MM-DD, convertir en ISO
+      if (typeof expectedDeliveryISO === 'string' && !expectedDeliveryISO.includes('T')) {
+        expectedDeliveryISO = new Date(expectedDeliveryISO).toISOString();
+      }
+
+      const poCreate = {
+        supplierId: po.supplierId || '',
+        createdByUserId: po.createdByUserId,
+        expectedDelivery: expectedDeliveryISO,
+        status: po.status || 'DRAFT',
+        shippingAddress: po.shippingAddress || '',
+        billingAddress: po.billingAddress || '',
+        notes: po.notes || '',
+        orderLines: (po.orderLines || []).map(line => {
+          // Ensure productId is a string, not an Event object
+          let productId = line.productId;
+          if (productId && typeof productId === 'object' && (productId as any).target) {
+            productId = (productId as any).target.value;
+          }
+          
+          return {
+            productId: String(productId || ''),
+            quantity: Number(line.quantity) || 0,
+            unitPrice: Number(line.unitPrice) || 0
+          };
+        })
+      };
+      console.log('Sending PO:', poCreate);
+      this.store.dispatch(PoActions.createPurchaseOrder({ order: poCreate as any }));
+    }
+    this.closeForm();
+  }
+
+  private convertToDate(value: any): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+    if (typeof value === 'string') {
+      return new Date(value);
+    }
+    return null;
+  }
+
+  onFormCancel() {
+    this.closeForm();
+  }
+
+  closeForm() {
+    this.showForm = false;
+    this.isEditMode = false;
+    this.editingOrder = undefined;
   }
 
   deleteOrder(id: string) {
@@ -100,5 +188,17 @@ export class PoListComponent implements OnInit {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  getTotalAmount(order: PurchaseOrder): number {
+    // If totalAmount exists, use it
+    if (order.totalAmount) {
+      return order.totalAmount;
+    }
+    // Otherwise, calculate from order lines
+    if (order.orderLines && order.orderLines.length > 0) {
+      return order.orderLines.reduce((sum, line) => sum + (line.total || 0), 0);
+    }
+    return 0;
   }
 }

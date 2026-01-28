@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 import {
   PurchaseOrder,
@@ -60,10 +60,22 @@ export class PurchaseOrderService {
   }
 
   createPurchaseOrder(order: PurchaseOrderCreate): Observable<PurchaseOrder> {
+    console.log('API Request payload:', JSON.stringify(order, null, 2));
     return this.http.post<PurchaseOrder>(
       this.apiUrl,
       order,
       { headers: this.getAuthHeaders() }
+    ).pipe(
+      tap(response => {
+        console.log('API Response:', response);
+      }),
+      catchError(error => {
+        console.error('API Error details:', error);
+        if (error.error) {
+          console.error('Error response body:', error.error);
+        }
+        throw error;
+      })
     );
   }
 
