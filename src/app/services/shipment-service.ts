@@ -38,15 +38,15 @@ export class ShipmentService {
   }
 
   // Update shipment
-  updateShipment(trackingNumber: string, shipment: Partial<Shipment>): Observable<Shipment> {
+  updateShipment(shipmentId: string, shipment: Shipment): Observable<Shipment> {
     const headers = this.getAuthHeaders();
-    return this.http.put<Shipment>(`${this.apiUrl}/${trackingNumber}`, shipment, { headers });
+    return this.http.put<Shipment>(`${this.apiUrl}/${shipmentId}`, shipment, { headers });
   }
 
   // Delete shipment
-  deleteShipment(trackingNumber: string): Observable<void> {
+  deleteShipment(shipmentId: string): Observable<void> {
     const headers = this.getAuthHeaders();
-    return this.http.delete<void>(`${this.apiUrl}/${trackingNumber}`, { headers });
+    return this.http.delete<void>(`${this.apiUrl}/${shipmentId}`, { headers });
   }
 
   // Get shipments by status

@@ -84,15 +84,15 @@ export const shipmentsReducer = createReducer(
     error: null,
   })),
 
-  on(ShipmentsActions.deleteShipmentSuccess, (state, { trackingNumber }) => ({
+  on(ShipmentsActions.deleteShipmentSuccess, (state, { shipmentId }) => ({
     ...state,
     shipments: state.shipments.filter(
-      (s) => s.trackingNumber !== trackingNumber
+      (s) => s.id !== shipmentId
     ),
     loading: false,
     error: null,
     selectedShipment:
-      state.selectedShipment?.trackingNumber === trackingNumber
+      state.selectedShipment?.id === shipmentId
         ? null
         : state.selectedShipment,
   })),

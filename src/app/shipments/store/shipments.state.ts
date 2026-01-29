@@ -1,6 +1,7 @@
 export interface Shipment {
+  id: string;
   trackingNumber: string;
-  status: 'IN_TRANSIT' | 'DELIVERED' | 'PENDING' | 'CANCELLED';
+  status: 'PLANNED' | 'IN_TRANSIT' | 'DELIVERED' | 'CANCELLED' | 'SHIPPED' | 'PENDING';
   plannedDate: string;
   shippedDate?: string;
   deliveredDate?: string;

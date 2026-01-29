@@ -85,9 +85,9 @@ export class ShipmentsEffects {
   updateShipment$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ShipmentsActions.updateShipment),
-      tap((action) => console.log('🔄 Updating shipment:', action.trackingNumber, action.shipment)),
-      switchMap(({ trackingNumber, shipment }) =>
-        this.shipmentService.updateShipment(trackingNumber, shipment).pipe(
+      tap((action) => console.log('🔄 Updating shipment:', action.shipmentId, action.shipment)),
+      switchMap(({ shipmentId, shipment }) =>
+        this.shipmentService.updateShipment(shipmentId, shipment).pipe(
           tap((updated) => console.log('✅ Shipment updated:', updated)),
           map((shipment) =>
             ShipmentsActions.updateShipmentSuccess({ shipment })
@@ -107,12 +107,12 @@ export class ShipmentsEffects {
   deleteShipment$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ShipmentsActions.deleteShipment),
-      tap((action) => console.log('🔄 Deleting shipment:', action.trackingNumber)),
-      switchMap(({ trackingNumber }) =>
-        this.shipmentService.deleteShipment(trackingNumber).pipe(
-          tap(() => console.log('✅ Shipment deleted:', trackingNumber)),
+      tap((action) => console.log('🔄 Deleting shipment:', action.shipmentId)),
+      switchMap(({ shipmentId }) =>
+        this.shipmentService.deleteShipment(shipmentId).pipe(
+          tap(() => console.log('✅ Shipment deleted:', shipmentId)),
           map(() =>
-            ShipmentsActions.deleteShipmentSuccess({ trackingNumber })
+            ShipmentsActions.deleteShipmentSuccess({ shipmentId })
           ),
           catchError((error) => {
             console.error('❌ Error deleting shipment:', error);

@@ -49,7 +49,7 @@ export const createShipmentFailure = createAction(
 
 export const updateShipment = createAction(
   '[ShipmentsComponent] Update Shipment',
-  props<{ trackingNumber: string; shipment: Partial<Shipment> }>()
+  props<{ shipmentId: string; shipment: Shipment }>()
 );
 
 export const updateShipmentSuccess = createAction(
@@ -65,12 +65,12 @@ export const updateShipmentFailure = createAction(
 // Delete Shipment
 export const deleteShipment = createAction(
   '[ShipmentsComponent] Delete Shipment',
-  props<{ trackingNumber: string }>()
+  props<{ shipmentId: string }>()
 );
 
 export const deleteShipmentSuccess = createAction(
   '[ShipmentsComponent] Delete Shipment Success',
-  props<{ trackingNumber: string }>()
+  props<{ shipmentId: string }>()
 );
 
 export const deleteShipmentFailure = createAction(

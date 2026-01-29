@@ -58,7 +58,7 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
   showCreateModal = false;
   showEditModal = false;
   showDeleteModal = false;
-  statuses = ['PENDING', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED'];
+  statuses = ['PLANNED', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED', 'SHIPPED', 'PENDING'];
 
   private subscriptions = new Subscription();
 
@@ -214,6 +214,7 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
     if (this.shipmentForm.valid) {
       const formValue = this.shipmentForm.value;
       const shipmentData: Shipment = {
+        id: '', // ID généré par le backend
         trackingNumber: formValue.trackingNumber,
         status: formValue.status,
         plannedDate: `${formValue.plannedDate}T00:00:00`,
@@ -240,17 +241,19 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
   onUpdate(): void {
     if (this.shipmentForm.valid && this.selectedShipment) {
       const formValue = this.shipmentForm.value;
-      const shipmentData = {
+      const shipmentData: Shipment = {
+        id: this.selectedShipment.id,
+        trackingNumber: this.selectedShipment.trackingNumber,
         status: formValue.status,
-        plannedDate: formValue.plannedDate ? `${formValue.plannedDate}T00:00:00` : undefined,
+        plannedDate: `${formValue.plannedDate}T00:00:00`,
         shippedDate: formValue.shippedDate ? `${formValue.shippedDate}T00:00:00` : undefined,
         deliveredDate: formValue.deliveredDate ? `${formValue.deliveredDate}T00:00:00` : undefined,
         salesOrderId: formValue.salesOrderId
       };
 
-      console.log('🔄 Updating shipment:', this.selectedShipment.trackingNumber, shipmentData);
+      console.log('🔄 Updating shipment:', this.selectedShipment.id, shipmentData);
       this.store.dispatch(updateShipment({
-        trackingNumber: this.selectedShipment.trackingNumber,
+        shipmentId: this.selectedShipment.id,
         shipment: shipmentData
       }));
       
@@ -268,9 +271,9 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
   // Supprimer une expédition
   onDelete(): void {
     if (this.selectedShipment) {
-      console.log('🗑️ Deleting shipment:', this.selectedShipment.trackingNumber);
+      console.log('🗑️ Deleting shipment:', this.selectedShipment.id);
       this.store.dispatch(deleteShipment({
-        trackingNumber: this.selectedShipment.trackingNumber
+        shipmentId: this.selectedShipment.id
       }));
       
       // Recharger la liste après 500ms
