@@ -34,7 +34,7 @@ export const loadShipmentFailure = createAction(
 // Create Shipment
 export const createShipment = createAction(
   '[ShipmentsComponent] Create Shipment',
-  props<{ shipment: Omit<Shipment, 'trackingNumber'> }>()
+  props<{ shipment: Shipment }>()
 );
 
 export const createShipmentSuccess = createAction(

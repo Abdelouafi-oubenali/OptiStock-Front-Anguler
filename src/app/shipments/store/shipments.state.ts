@@ -5,7 +5,6 @@ export interface Shipment {
   shippedDate?: string;
   deliveredDate?: string;
   salesOrderId: string;
-  carrierId: string;
 }
 
 export interface ShipmentsState {

@@ -76,13 +76,12 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
 
     // Initialisation des formulaires
     this.shipmentForm = this.fb.group({
-      trackingNumber: ['', [Validators.required, Validators.pattern(/^[A-Z0-9]{8,20}$/)]],
+      trackingNumber: ['', Validators.required],
       status: ['PENDING', Validators.required],
       plannedDate: ['', Validators.required],
       shippedDate: [''],
       deliveredDate: [''],
-      salesOrderId: ['', [Validators.required, Validators.pattern(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)]],
-      carrierId: ['', [Validators.required, Validators.pattern(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)]]
+      salesOrderId: ['', [Validators.required, Validators.pattern(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)]]
     });
 
     this.searchForm = this.fb.group({
@@ -165,39 +164,45 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
       plannedDate: shipment.plannedDate ? shipment.plannedDate.split('T')[0] : '',
       shippedDate: shipment.shippedDate ? shipment.shippedDate.split('T')[0] : '',
       deliveredDate: shipment.deliveredDate ? shipment.deliveredDate.split('T')[0] : '',
-      salesOrderId: shipment.salesOrderId,
-      carrierId: shipment.carrierId
+      salesOrderId: shipment.salesOrderId
     });
   }
 
   // Ouvrir modal de création
   openCreateModal(): void {
+    console.log('🆕 Opening create modal');
     this.shipmentForm.reset({
       status: 'PENDING',
       trackingNumber: '',
       plannedDate: '',
       shippedDate: '',
       deliveredDate: '',
-      salesOrderId: '',
-      carrierId: ''
+      salesOrderId: ''
     });
     this.showCreateModal = true;
+    console.log('showCreateModal:', this.showCreateModal);
   }
 
   // Ouvrir modal d'édition
   openEditModal(shipment: Shipment): void {
-    this.store.dispatch(loadShipment({ trackingNumber: shipment.trackingNumber }));
+    console.log('✏️ Opening edit modal for:', shipment);
+    this.selectedShipment = shipment;
+    this.patchForm(shipment);
     this.showEditModal = true;
+    console.log('showEditModal:', this.showEditModal);
   }
 
   // Ouvrir modal de suppression
   openDeleteModal(shipment: Shipment): void {
-    this.store.dispatch(loadShipment({ trackingNumber: shipment.trackingNumber }));
+    console.log('🗑️ Opening delete modal for:', shipment);
+    this.selectedShipment = shipment;
     this.showDeleteModal = true;
+    console.log('showDeleteModal:', this.showDeleteModal);
   }
 
   // Fermer tous les modals
   closeModals(): void {
+    console.log('❌ Closing all modals');
     this.showCreateModal = false;
     this.showEditModal = false;
     this.showDeleteModal = false;
@@ -208,15 +213,26 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
   onCreate(): void {
     if (this.shipmentForm.valid) {
       const formValue = this.shipmentForm.value;
-      const shipmentData = {
-        ...formValue,
-        plannedDate: formValue.plannedDate ? `${formValue.plannedDate}T00:00:00` : null,
-        shippedDate: formValue.shippedDate ? `${formValue.shippedDate}T00:00:00` : null,
-        deliveredDate: formValue.deliveredDate ? `${formValue.deliveredDate}T00:00:00` : null
+      const shipmentData: Shipment = {
+        trackingNumber: formValue.trackingNumber,
+        status: formValue.status,
+        plannedDate: `${formValue.plannedDate}T00:00:00`,
+        shippedDate: formValue.shippedDate ? `${formValue.shippedDate}T00:00:00` : undefined,
+        deliveredDate: formValue.deliveredDate ? `${formValue.deliveredDate}T00:00:00` : undefined,
+        salesOrderId: formValue.salesOrderId
       };
 
+      console.log('📦 Creating shipment:', shipmentData);
       this.store.dispatch(createShipment({ shipment: shipmentData }));
+      
+      // Recharger la liste après 500ms
+      setTimeout(() => {
+        this.refresh();
+      }, 500);
+      
       this.closeModals();
+    } else {
+      console.error('❌ Form is invalid:', this.shipmentForm.errors);
     }
   }
 
@@ -225,27 +241,46 @@ export class ShipmentsComponent implements OnInit, OnDestroy {
     if (this.shipmentForm.valid && this.selectedShipment) {
       const formValue = this.shipmentForm.value;
       const shipmentData = {
-        ...formValue,
-        plannedDate: formValue.plannedDate ? `${formValue.plannedDate}T00:00:00` : null,
-        shippedDate: formValue.shippedDate ? `${formValue.shippedDate}T00:00:00` : null,
-        deliveredDate: formValue.deliveredDate ? `${formValue.deliveredDate}T00:00:00` : null
+        status: formValue.status,
+        plannedDate: formValue.plannedDate ? `${formValue.plannedDate}T00:00:00` : undefined,
+        shippedDate: formValue.shippedDate ? `${formValue.shippedDate}T00:00:00` : undefined,
+        deliveredDate: formValue.deliveredDate ? `${formValue.deliveredDate}T00:00:00` : undefined,
+        salesOrderId: formValue.salesOrderId
       };
 
+      console.log('🔄 Updating shipment:', this.selectedShipment.trackingNumber, shipmentData);
       this.store.dispatch(updateShipment({
         trackingNumber: this.selectedShipment.trackingNumber,
         shipment: shipmentData
       }));
+      
+      // Recharger la liste après 500ms
+      setTimeout(() => {
+        this.refresh();
+      }, 500);
+      
       this.closeModals();
+    } else {
+      console.error('❌ Form is invalid or no shipment selected');
     }
   }
 
   // Supprimer une expédition
   onDelete(): void {
     if (this.selectedShipment) {
+      console.log('🗑️ Deleting shipment:', this.selectedShipment.trackingNumber);
       this.store.dispatch(deleteShipment({
         trackingNumber: this.selectedShipment.trackingNumber
       }));
+      
+      // Recharger la liste après 500ms
+      setTimeout(() => {
+        this.refresh();
+      }, 500);
+      
       this.closeModals();
+    } else {
+      console.error('❌ No shipment selected for deletion');
     }
   }
 
