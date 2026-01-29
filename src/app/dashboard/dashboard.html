@@ -211,6 +211,31 @@
               Warehouses
             </button>
           </li>
+
+          <!-- Shipments -->
+          <li>
+            <button
+              (click)="setCurrentView('shipments')"
+              [attr.aria-current]="currentView === 'shipments' ? 'page' : null"
+              [attr.aria-label]="'Shipments' + (currentView === 'shipments' ? ' (current page)' : '')"
+              class="w-full flex items-center px-4 py-3.5 rounded-xl transition-all duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              [class.bg-gradient-to-r]="currentView === 'shipments' && !darkMode"
+              [class.from-blue-50]="currentView === 'shipments' && !darkMode"
+              [class.to-blue-100]="currentView === 'shipments' && !darkMode"
+              [class.text-blue-700]="currentView === 'shipments' && !darkMode"
+              [class.shadow-sm]="currentView === 'shipments' && !darkMode"
+              [class.bg-blue-900]="currentView === 'shipments' && darkMode"
+              [class.text-blue-300]="currentView === 'shipments' && darkMode"
+              [class]="currentView !== 'shipments' ? textSecondary + ' hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50' : ''"
+              [class.hover:bg-gray-700]="currentView !== 'shipments' && darkMode"
+              [class.focus:bg-gray-700]="currentView !== 'shipments' && darkMode"
+            >
+              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+              </svg>
+              Shipments
+            </button>
+          </li>
         </ul>
       </nav>
     </div>
@@ -433,6 +458,68 @@
               </p>
             </div>
           </div>
+
+          <!-- Shipments Overview -->
+          <div class="rounded-2xl border border-blue-100 p-6 bg-white shadow-sm" [class]="cardBg + ' ' + borderColor">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-lg font-bold text-blue-900" [class]="textPrimary">Shipments Overview</h3>
+              <button
+                (click)="setCurrentView('shipments')"
+                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium transition-colors flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+              >
+                View All
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors">
+                <div class="flex items-center">
+                  <div class="p-2 rounded-lg bg-blue-500 mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold" [class]="textPrimary">In Transit</p>
+                    <p class="text-xs" [class]="textSecondary">Active shipments</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-blue-600">{{ shipmentsStats.inTransit }}</span>
+              </div>
+
+              <div class="flex items-center justify-between p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-colors">
+                <div class="flex items-center">
+                  <div class="p-2 rounded-lg bg-green-500 mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold" [class]="textPrimary">Delivered</p>
+                    <p class="text-xs" [class]="textSecondary">Completed deliveries</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-green-600">{{ shipmentsStats.delivered }}</span>
+              </div>
+
+              <div class="flex items-center justify-between p-4 rounded-xl bg-yellow-50 hover:bg-yellow-100 transition-colors">
+                <div class="flex items-center">
+                  <div class="p-2 rounded-lg bg-yellow-500 mr-3">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold" [class]="textPrimary">Pending</p>
+                    <p class="text-xs" [class]="textSecondary">Awaiting pickup</p>
+                  </div>
+                </div>
+                <span class="text-2xl font-bold text-yellow-600">{{ shipmentsStats.pending }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -481,6 +568,11 @@
       <!-- Purchase Orders View -->
       <div *ngIf="currentView === 'purchase-orders'">
         <app-po-list></app-po-list>
+      </div>
+
+      <!-- Shipments View -->
+      <div *ngIf="currentView === 'shipments'">
+        <app-shipments></app-shipments>
       </div>
 
       <!-- Suppliers View -->

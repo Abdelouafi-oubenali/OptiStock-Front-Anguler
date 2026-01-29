@@ -9,13 +9,14 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { isDevMode } from '@angular/core';
 import { appReducers } from './app/store/po.state';
 import { PurchaseOrderEffects } from './app/purchase-orders/po.effects';
+import { ShipmentsEffects } from './app/shipments/store/shipments.effects';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
     provideStore(appReducers),
-    provideEffects([PurchaseOrderEffects]),
+    provideEffects([PurchaseOrderEffects, ShipmentsEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
 ]
 });

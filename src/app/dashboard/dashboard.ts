@@ -19,6 +19,7 @@ import {SalesOrderLine, SalseOrder} from '../orders/order-models';
 import { OrderService } from '../services/order-service';
 import {OrdersManagementComponent} from '../orders/orders-mangement-component';
 import { PoListComponent } from '../purchase-orders/components/po-list.component';
+import { ShipmentsComponent } from '../shipments/shipments.component';
 
 interface MenuItem {
   id: string;
@@ -46,7 +47,8 @@ interface StatCard {
     InventoryComponent,
     OrdersManagementComponent,
     SuppliersComponent,
-    PoListComponent
+    PoListComponent,
+    ShipmentsComponent
   ],
   templateUrl: './dashboard.html'
 })
@@ -66,7 +68,8 @@ export class DashboardComponent implements OnInit {
     warehouses: false,
     inventories: false,
     suppliers: false,
-    orders: false
+    orders: false,
+    shipments: false
   };
 
   // Données mockées
@@ -77,6 +80,7 @@ export class DashboardComponent implements OnInit {
     { id: 'warehouses', label: 'Warehouses', icon: 'warehouse' },
     { id: 'inventories', label: 'Inventories', icon: 'boxes' },
     { id: 'suppliers', label: 'Suppliers', icon: 'truck' },
+    { id: 'shipments', label: 'Shipments', icon: 'truck' },
     { id: 'customers', label: 'Customers', icon: 'users' },
     { id: 'transactions', label: 'Transactions', icon: 'credit-card' },
     { id: 'reports', label: 'Reports', icon: 'bar-chart-2' },
@@ -101,7 +105,15 @@ export class DashboardComponent implements OnInit {
   suppliers: Supplier[] = [];
   salesOrders: SalseOrder[] = [];
   salesOrdersLine: SalesOrderLine[] = [];
-
+  
+  // Shipments stats (mock data for now)
+  shipmentsStats = {
+    total: 0,
+    inTransit: 0,
+    delivered: 0,
+    pending: 0,
+    cancelled: 0
+  };
 
   // Maps pour cache
   private productMap: Map<string, Product> = new Map();
@@ -127,6 +139,7 @@ export class DashboardComponent implements OnInit {
 
       this.loadInventories();
       this.loadUsers();
+      this.loadShipmentsStats();
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     }
@@ -531,6 +544,23 @@ export class DashboardComponent implements OnInit {
       });
     }
 
+    // Total Shipments
+    if (this.shipmentsStats.total > 0) {
+      stats.push({
+        title: 'Total Shipments',
+        value: this.shipmentsStats.total,
+        icon: 'truck',
+        trend: 'up'
+      });
+      
+      stats.push({
+        title: 'In Transit',
+        value: this.shipmentsStats.inTransit,
+        icon: 'truck',
+        trend: 'neutral'
+      });
+    }
+
     // Si aucune donnée réelle n'est disponible, afficher au moins un message
     if (stats.length === 0) {
       stats.push({
@@ -542,6 +572,18 @@ export class DashboardComponent implements OnInit {
     }
 
     return stats;
+  }
+
+  loadShipmentsStats(): void {
+    // Mock data for shipments statistics
+    // TODO: Replace with actual service call when shipments service is ready
+    this.shipmentsStats = {
+      total: 45,
+      inTransit: 12,
+      delivered: 28,
+      pending: 3,
+      cancelled: 2
+    };
   }
 
   getTrendColorClass(trend: 'up' | 'down' | 'neutral'): string {
