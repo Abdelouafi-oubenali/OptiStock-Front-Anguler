@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { PurchaseOrder } from '../purchase-order.model';
@@ -10,7 +10,7 @@ import { OrderLine } from '../models/order-line.model';
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './po-form.component.html'
 })
-export class PoFormComponent implements OnInit {
+export class PoFormComponent implements OnInit, OnChanges {
   @Input() order?: PurchaseOrder;
   @Input() isEdit = false;
   @Output() save = new EventEmitter<PurchaseOrder>();
@@ -28,6 +28,12 @@ export class PoFormComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['order'] && this.order && this.isEdit && this.poForm) {
+      this.populateForm();
+    }
+  }
+
   initForm() {
     this.poForm = this.fb.group({
       supplierId: ['', Validators.required],
@@ -41,17 +47,34 @@ export class PoFormComponent implements OnInit {
   }
 
   populateForm() {
+    console.log('populateForm appelée avec order:', this.order);
+    
     if (this.order) {
-      this.poForm.patchValue({
-        supplierId: this.order.supplierId,
-        createdByUserId: this.order.createdByUserId,
-        expectedDelivery: this.order.expectedDelivery,
-        status: this.order.status,
-        shippingAddress: this.order.shippingAddress,
-        billingAddress: this.order.billingAddress,
-        notes: this.order.notes
-      });
-      this.orderLines = this.order.orderLines || [];
+      // Convertir la date expectedDelivery au format YYYY-MM-DD pour l'input date
+      let dateFormatted = '';
+      if (this.order.expectedDelivery) {
+        const date = new Date(this.order.expectedDelivery);
+        if (!isNaN(date.getTime())) {
+          dateFormatted = date.toISOString().split('T')[0];
+        }
+      }
+
+      const formData = {
+        supplierId: this.order.supplierId || '',
+        createdByUserId: this.order.createdByUserId || 'da3e580b-f78c-4d00-9c5f-11a6dcaa825a',
+        expectedDelivery: dateFormatted,
+        status: this.order.status || '',
+        shippingAddress: this.order.shippingAddress || '',
+        billingAddress: this.order.billingAddress || '',
+        notes: this.order.notes || ''
+      };
+
+      console.log('Remplissage du formulaire avec:', formData);
+      this.poForm.patchValue(formData);
+
+      // Copier les lignes de commande avec toutes leurs informations
+      this.orderLines = this.order.orderLines ? [...this.order.orderLines] : [];
+      console.log('OrderLines copiées:', this.orderLines);
     }
   }
 
